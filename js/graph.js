@@ -1,17 +1,17 @@
 // Data Titik (Vertex/Node) - GANTI KOORDINAT INI DENGAN DATA ASLI DARI GOOGLE MAPS
 const nodes = {
-    "gerbang": { id: "gerbang", name: "Gerbang Utama", lat: 3.5952, lng: 98.6722 },
-    "lab_fisika": { id: "lab_fisika", name: "Laboratorium Fisika", lat: 3.5960, lng: 98.6730 },
-    "lab_biologi": { id: "lab_biologi", name: "Laboratorium Biologi", lat: 3.5948, lng: 98.6718 },
-    "jurusan_fisika": { id: "jurusan_fisika", name: "Jurusan Fisika", lat: 3.5958, lng: 98.6735 },
-    "gedung_biologi": { id: "gedung_biologi", name: "Gedung Biologi", lat: 3.5955, lng: 98.6740 },
-    "dekanat": { id: "dekanat", name: "Gedung Prof. Dr. Syawal Gultom", lat: 3.5950, lng: 98.6735 },
-    "fmipa": { id: "fmipa", name: "Fakultas Matematika dan Ilmu Pengetahuan", lat: 3.5945, lng: 98.6730 },
-    "lab_kimia": { id: "lab_kimia", name: "Laboratorium Kimia", lat: 3.5942, lng: 98.6725 },
-    "gedung_kimia": { id: "gedung_kimia", name: "Gedung Kimia", lat: 3.5948, lng: 98.6728 },
-    "bilingual": { id: "bilingual", name: "Gedung Bilingual", lat: 3.5940, lng: 98.6735 },
-    "ilkom": { id: "ilkom", name: "Gedung 77 Ilmu Komputer", lat: 3.5938, lng: 98.6715 },
-    "matematika": { id: "matematika", name: "Gedung Kuliah Matematika", lat: 3.5943, lng: 98.6745 }
+    "gerbang": { id: "gerbang", name: "Gerbang Utama", lat: 3.6062832241565133, lng: 98.71611585551601 },
+    "lab_fisika": { id: "lab_fisika", name: "Laboratorium Fisika", lat: 3.607721692468483, lng: 98.71471142595539 },
+    "lab_biologi": { id: "lab_biologi", name: "Laboratorium Biologi", lat: 3.607324027388923, lng: 98.71568542614393 },
+    "jurusan_fisika": { id: "jurusan_fisika", name: "Jurusan Fisika", lat: 3.6074590371548534, lng: 98.71524023919336 },
+    "gedung_biologi": { id: "gedung_biologi", name: "Gedung Biologi", lat: 3.6073092990578877, lng: 98.7157223200807 },
+    "dekanat": { id: "dekanat", name: "Gedung Prof. Dr. Syawal Gultom", lat: 3.607157106204316, lng: 98.71556244631391 },
+    "fmipa": { id: "fmipa", name: "Fakultas Matematika dan Ilmu Pengetahuan", lat: 3.606950909386032, lng: 98.71541487053862 },
+    "lab_kimia": { id: "lab_kimia", name: "Laboratorium Kimia", lat: 3.6067250747392117, lng: 98.71476307748004 },
+    "gedung_kimia": { id: "gedung_kimia", name: "Gedung Kimia", lat: 3.606877267665123, lng: 98.71520334523777 },
+    "bilingual": { id: "bilingual", name: "Gedung Bilingual", lat: 3.6066391593665617, lng: 98.7153115674799 },
+    "ilkom": { id: "ilkom", name: "Gedung 77 Ilmu Komputer", lat: 3.606631795191395, lng: 98.71427607739048 },
+    "matematika": { id: "matematika", name: "Gedung Matematika", lat: 3.5943, lng: 98.6745 }
 };
 
 // Data Jalur (Edge) dan Bobotnya (Jarak dalam meter)

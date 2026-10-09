@@ -104,17 +104,13 @@ const nodes = {
     "s_depan_bilingual_2": { id: "s_depan_bilingual_2", name: "Depan Bilingual 2", lat: 3.59302, lng: 98.67380, type: "simpang" },
     "s_depan_bilingual_3": { id: "s_depan_bilingual_3", name: "Depan Bilingual 3", lat: 3.59302, lng: 98.67380, type: "simpang" },
     "s_depan_bilingual_4": { id: "s_depan_bilingual_4", name: "Depan Bilingual 4", lat: 3.59302, lng: 98.67380, type: "simpang" },
-    "s_depan_bilingual_5": { id: "s_depan_bilingual_5", name: "Depan Bilingual 5", lat: 3.59302, lng: 98.67380, type: "simpang" }
+    "s_depan_bilingual_5": { id: "s_depan_bilingual_5", name: "Depan Bilingual 5", lat: 3.59302, lng: 98.67380, type: "simpang" },
 
     // Ini adalah Persimpangan Utama (Simpang 3 atau Simpang 4)
     "s_pusat_utara": { id: "s_pusat_utara", name: "Pusat Utara", lat: 3.59600, lng: 98.67200, type: "simpang" },
     "s_pusat_tengah": { id: "s_pusat_tengah", name: "Pusat Tengah", lat: 3.59500, lng: 98.67300, type: "simpang" },
     "s_pusat_selatan": { id: "s_pusat_selatan", name: "Pusat Selatan", lat: 3.59350, lng: 98.67100, type: "simpang" },
     "s_pusat_timur": { id: "s_pusat_timur", name: "Pusat Timur", lat: 3.59350, lng: 98.67400, type: "simpang" }
-
-    //daftar simpang baru
-    
-
 };
 
 // ====================================================================

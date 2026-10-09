@@ -20,7 +20,7 @@ const nodes = {
     // --- 5 SIMPANG DARI LAB FISIKA KE GEDUNG 12 ---
     // ================================================================
     // Simpang 1: Belokan pertama dari Lab Fisika
-    "simpang_fisika_1": { id: "simpang_fisika_1", name: "", lat: 0, lng: 0, type: "simpang" },
+    "simpang_fisika_1": { id: "simpang_fisika_1", name: "", lat: 3.59656, lng: 98.67295, type: "simpang" },
     // Simpang 2: Belokan kedua
     "simpang_fisika_2": { id: "simpang_fisika_2", name: "", lat: 0, lng: 0, type: "simpang" },
     // Simpang 3: Belokan ketiga (titik tengah)

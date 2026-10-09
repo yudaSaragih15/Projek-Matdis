@@ -3,18 +3,18 @@
 // ====================================================================
 const nodes = {
     // --- GEDUNG (Akan muncul Marker Biru) ---
-    "gedung_12": { id: "gedung_12", name: "Gedung 12", lat: 3.5965, lng: 98.6705, type: "gedung" },
-    "lab_fisika": { id: "lab_fisika", name: "Lab. Fisika", lat: 3.5968, lng: 98.6715, type: "gedung" },
-    "lab_biologi": { id: "lab_biologi", name: "Lab. Biologi", lat: 3.5945, lng: 98.6695, type: "gedung" },
-    "lab_komputer": { id: "lab_komputer", name: "Lab. Komputer", lat: 3.5935, lng: 98.6708, type: "gedung" },
-    "rumah_kaca": { id: "rumah_kaca", name: "Rumah Kaca", lat: 3.5955, lng: 98.6718, type: "gedung" },
-    "lab_kimia": { id: "lab_kimia", name: "Lab. Kimia", lat: 3.5938, lng: 98.6725, type: "gedung" },
-    "bilingual": { id: "bilingual", name: "Gedung Bilingual", lat: 3.5930, lng: 98.6732, type: "gedung" },
-    "biologi": { id: "biologi", name: "Biologi", lat: 3.5965, lng: 98.6735, type: "gedung" },
-    "fisika": { id: "fisika", name: "Fisika", lat: 3.5968, lng: 98.6750, type: "gedung" },
-    "gedung_syawal": { id: "gedung_syawal", name: "Gedung Syawal", lat: 3.5955, lng: 98.6740, type: "gedung" },
-    "kimia": { id: "kimia", name: "Kimia", lat: 3.5945, lng: 98.6740, type: "gedung" },
-    "matematika": { id: "matematika", name: "Matematika", lat: 3.5940, lng: 98.6755, type: "gedung" },
+    "gedung_12": { id: "gedung_12", name: "Gedung 12", lat: 3.59599, lng: 98.67073, type: "gedung" },
+    "lab_fisika": { id: "lab_fisika", name: "Lab. Fisika", lat: 3.59689, lng: 98.67203, type: "gedung" },
+    "lab_biologi": { id: "lab_biologi", name: "Lab. Biologi", lat: 3.59343, lng: 98.66935, type: "gedung" },
+    "lab_komputer": { id: "lab_komputer", name: "Lab. Komputer", lat: 3.59303, lng: 98.67068, type: "gedung" },
+    "rumah_kaca": { id: "rumah_kaca", name: "Rumah Kaca", lat: 3.59505, lng: 98.67151, type: "gedung" },
+    "lab_kimia": { id: "lab_kimia", name: "Lab. Kimia", lat: 3.59332, lng: 98.67233, type: "gedung" },
+    "bilingual": { id: "bilingual", name: "Gedung Bilingual", lat: 3.59302, lng: 98.67405, type: "gedung" },
+    "biologi": { id: "biologi", name: "Biologi", lat: 3.59574, lng: 98.67514, type: "gedung" },
+    "fisika": { id: "fisika", name: "Fisika", lat: 3.59608, lng: 98.67346, type: "gedung" },
+    "gedung_syawal": { id: "gedung_syawal", name: "Gedung Syawal", lat: 3.59498, lng: 98.67426, type: "gedung" },
+    "kimia": { id: "kimia", name: "Kimia", lat:3.59401, lng: 98.67359, type: "gedung" },
+    "matematika": { id: "matematika", name: "Matematika", lat: 3.59393, lng: 98.67511, type: "gedung" },
 
     // ================================================================
     // --- 5 SIMPANG DARI LAB FISIKA KE GEDUNG 12 ---

@@ -1,34 +1,66 @@
-// Data Titik (Vertex/Node) - GANTI KOORDINAT INI DENGAN DATA ASLI DARI GOOGLE MAPS
+// ====================================================================
+// DATA TITIK (NODE)
+// ====================================================================
 const nodes = {
-    "gerbang": { id: "gerbang", name: "Gerbang Utama", lat: 3.6062832241565133, lng: 98.71611585551601 },
-    "lab_fisika": { id: "lab_fisika", name: "Laboratorium Fisika", lat: 3.607721692468483, lng: 98.71471142595539 },
-    "lab_biologi": { id: "lab_biologi", name: "Laboratorium Biologi", lat: 3.607324027388923, lng: 98.71568542614393 },
-    "jurusan_fisika": { id: "jurusan_fisika", name: "Jurusan Fisika", lat: 3.6074590371548534, lng: 98.71524023919336 },
-    "gedung_biologi": { id: "gedung_biologi", name: "Gedung Biologi", lat: 3.6073092990578877, lng: 98.7157223200807 },
-    "dekanat": { id: "dekanat", name: "Gedung Prof. Dr. Syawal Gultom", lat: 3.607157106204316, lng: 98.71556244631391 },
-    "fmipa": { id: "fmipa", name: "Fakultas Matematika dan Ilmu Pengetahuan", lat: 3.606950909386032, lng: 98.71541487053862 },
-    "lab_kimia": { id: "lab_kimia", name: "Laboratorium Kimia", lat: 3.6067250747392117, lng: 98.71476307748004 },
-    "gedung_kimia": { id: "gedung_kimia", name: "Gedung Kimia", lat: 3.606877267665123, lng: 98.71520334523777 },
-    "bilingual": { id: "bilingual", name: "Gedung Bilingual", lat: 3.6066391593665617, lng: 98.7153115674799 },
-    "ilkom": { id: "ilkom", name: "Gedung 77 Ilmu Komputer", lat: 3.606631795191395, lng: 98.71427607739048 },
-    "matematika": { id: "matematika", name: "Gedung Matematika", lat: 3.5943, lng: 98.6745 }
+    // --- GEDUNG (Akan muncul Marker Biru) ---
+    "gedung_12": { id: "gedung_12", name: "Gedung 12", lat: 3.5965, lng: 98.6705, type: "gedung" },
+    "lab_fisika": { id: "lab_fisika", name: "Lab. Fisika", lat: 3.5968, lng: 98.6715, type: "gedung" },
+    "lab_biologi": { id: "lab_biologi", name: "Lab. Biologi", lat: 3.5945, lng: 98.6695, type: "gedung" },
+    "lab_komputer": { id: "lab_komputer", name: "Lab. Komputer", lat: 3.5935, lng: 98.6708, type: "gedung" },
+    "rumah_kaca": { id: "rumah_kaca", name: "Rumah Kaca", lat: 3.5955, lng: 98.6718, type: "gedung" },
+    "lab_kimia": { id: "lab_kimia", name: "Lab. Kimia", lat: 3.5938, lng: 98.6725, type: "gedung" },
+    "bilingual": { id: "bilingual", name: "Gedung Bilingual", lat: 3.5930, lng: 98.6732, type: "gedung" },
+    "biologi": { id: "biologi", name: "Biologi", lat: 3.5965, lng: 98.6735, type: "gedung" },
+    "fisika": { id: "fisika", name: "Fisika", lat: 3.5968, lng: 98.6750, type: "gedung" },
+    "gedung_syawal": { id: "gedung_syawal", name: "Gedung Syawal", lat: 3.5955, lng: 98.6740, type: "gedung" },
+    "kimia": { id: "kimia", name: "Kimia", lat: 3.5945, lng: 98.6740, type: "gedung" },
+    "matematika": { id: "matematika", name: "Matematika", lat: 3.5940, lng: 98.6755, type: "gedung" },
+
+    // ================================================================
+    // --- 5 SIMPANG DARI LAB FISIKA KE GEDUNG 12 ---
+    // ================================================================
+    // Simpang 1: Belokan pertama dari Lab Fisika
+    "simpang_fisika_1": { id: "simpang_fisika_1", name: "", lat: 0, lng: 0, type: "simpang" },
+    // Simpang 2: Belokan kedua
+    "simpang_fisika_2": { id: "simpang_fisika_2", name: "", lat: 0, lng: 0, type: "simpang" },
+    // Simpang 3: Belokan ketiga (titik tengah)
+    "simpang_fisika_3": { id: "simpang_fisika_3", name: "", lat: 0, lng: 0, type: "simpang" },
+    // Simpang 4: Belokan keempat
+    "simpang_fisika_4": { id: "simpang_fisika_4", name: "", lat: 0, lng: 0, type: "simpang" },
+    // Simpang 5: Belokan terakhir sebelum Gedung 12
+    "simpang_fisika_5": { id: "simpang_fisika_5", name: "", lat: 0, lng: 0, type: "simpang" }
 };
 
-// Data Jalur (Edge) dan Bobotnya (Jarak dalam meter)
-// Format: { from: "id_awal", to: "id_tujuan", weight: jarak }
+// ====================================================================
+// DATA JALUR (EDGE)
+// ====================================================================
 const edges = [
-    { from: "gerbang", to: "lab_fisika", weight: 100 },
-    { from: "gerbang", to: "lab_biologi", weight: 120 },
-    { from: "lab_fisika", to: "jurusan_fisika", weight: 50 },
-    { from: "jurusan_fisika", to: "gedung_biologi", weight: 40 },
-    { from: "gedung_biologi", to: "dekanat", weight: 60 },
-    { from: "dekanat", to: "fmipa", weight: 50 },
-    { from: "fmipa", to: "lab_kimia", weight: 40 },
-    { from: "lab_kimia", to: "gedung_kimia", weight: 30 },
-    { from: "gedung_kimia", to: "bilingual", weight: 70 },
-    { from: "bilingual", to: "matematika", weight: 50 },
-    { from: "matematika", to: "dekanat", weight: 80 },
-    { from: "lab_biologi", to: "ilkom", weight: 90 },
-    { from: "ilkom", to: "lab_kimia", weight: 100 },
-    { from: "lab_biologi", to: "gedung_kimia", weight: 130 }
+    // --- RUTE LAB FISIKA -> GEDUNG 12 (Melalui 5 Simpang) ---
+    { from: "lab_fisika", to: "simpang_fisika_1", weight: 10 },
+    { from: "simpang_fisika_1", to: "simpang_fisika_2", weight: 10 },
+    { from: "simpang_fisika_2", to: "simpang_fisika_3", weight: 10 },
+    { from: "simpang_fisika_3", to: "simpang_fisika_4", weight: 10 },
+    { from: "simpang_fisika_4", to: "simpang_fisika_5", weight: 10 },
+    { from: "simpang_fisika_5", to: "gedung_12", weight: 10 },
+
+    // --- RUTE LAINNYA (Silakan sesuaikan jika perlu) ---
+    { from: "gedung_12", to: "lab_biologi", weight: 80 },
+    { from: "gedung_12", to: "rumah_kaca", weight: 60 },
+    { from: "lab_fisika", to: "biologi", weight: 50 },
+    { from: "lab_fisika", to: "rumah_kaca", weight: 50 },
+    { from: "lab_biologi", to: "lab_komputer", weight: 30 },
+    { from: "lab_biologi", to: "rumah_kaca", weight: 70 },
+    { from: "rumah_kaca", to: "lab_kimia", weight: 40 },
+    { from: "rumah_kaca", to: "biologi", weight: 50 },
+    { from: "lab_komputer", to: "lab_kimia", weight: 60 },
+    { from: "biologi", to: "fisika", weight: 40 },
+    { from: "biologi", to: "gedung_syawal", weight: 50 },
+    { from: "fisika", to: "gedung_syawal", weight: 60 },
+    { from: "gedung_syawal", to: "kimia", weight: 40 },
+    { from: "gedung_syawal", to: "matematika", weight: 50 },
+    { from: "lab_kimia", to: "kimia", weight: 50 },
+    { from: "lab_kimia", to: "bilingual", weight: 60 },
+    { from: "kimia", to: "matematika", weight: 40 },
+    { from: "kimia", to: "bilingual", weight: 50 },
+    { from: "matematika", to: "bilingual", weight: 70 }
 ];

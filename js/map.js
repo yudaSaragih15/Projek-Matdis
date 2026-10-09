@@ -3,71 +3,62 @@ let markers = {};
 let routeLine = null;
 
 function initMap() {
-    // 1. Inisialisasi peta (Arahkan ke koordinat tengah FMIPA)
-    map = L.map('map').setView([3.5952, 98.6722], 18); // Zoom 18 = Sangat dekat
+    map = L.map('map', { 
+        zoomControl: true,
+        maxBoundsViscosity: 1.0, 
+        attributionControl: false 
+    }).setView([3.5952, 98.6722], 18);
 
-    // 2. Gunakan Citra Satelit Esri (Gratis)
-    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-        attribution: 'Tiles &copy; Esri'
-    }).addTo(map);
-
-    // Opsional: Tambahkan label nama jalan di atas satelit
-    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}', {
-        attribution: 'Labels &copy; Esri'
-    }).addTo(map);
-
-    // 3. KUNCI PETA AGAR HANYA MENAMPILKAN AREA FMIPA
-    // Sesuaikan angka ini dengan luas area FMIPA di peta kamu
-    const batasFMIPA = [
-        [3.5970, 98.6700], // Batas Kiri Atas (Lat, Lng)
-        [3.5930, 98.6750]  // Batas Kanan Bawah (Lat, Lng)
+    const imageBounds = [
+        [3.5980, 98.6690], 
+        [3.5920, 98.6760]  
     ];
-    map.setMaxBounds(batasFMIPA);
-    map.setMinZoom(16); // Mencegah user zoom out terlalu jauh
-    map.setMaxZoom(19); // Mencegah user zoom in terlalu dekat
 
-    // 4. Gambar semua titik (Node) ke peta
+    const sketsaImage = 'assets/Gambar Sketsa.jpg'; 
+    L.imageOverlay(sketsaImage, imageBounds).addTo(map);
+
+    map.setMaxBounds(imageBounds);
+    map.setMinZoom(17); 
+    map.setMaxZoom(20); 
+
+    // Hanya gambar marker untuk tipe "gedung"
     Object.values(nodes).forEach(node => {
-        const marker = L.marker([node.lat, node.lng]).addTo(map);
-        marker.bindPopup(`<b>${node.name}</b>`);
-        markers[node.id] = marker;
+        if (node.type === "gedung") {
+            const marker = L.marker([node.lat, node.lng]).addTo(map);
+            marker.bindPopup(`<b>${node.name}</b>`);
+            markers[node.id] = marker;
+        }
     });
 
-    // 5. Gambar semua jalur (Edge) sebagai garis kuning putus-putus
-    edges.forEach(edge => {
-        const fromNode = nodes[edge.from];
-        const toNode = nodes[edge.to];
+    // ====================================================================
+    // FITUR MAGIC: KLIK PETA UNTUK MENDAPATKAN KOORDINAT
+    // ====================================================================
+    map.on('click', function(e) {
+        const lat = e.latlng.lat.toFixed(5);
+        const lng = e.latlng.lng.toFixed(5);
         
-        L.polyline([
-            [fromNode.lat, fromNode.lng],
-            [toNode.lat, toNode.lng]
-        ], {
-            color: '#FFD700', // Kuning Emas (Sangat kontras di atas satelit gelap)
-            weight: 5,
-            opacity: 1,
-            dashArray: '8, 8'
-        }).addTo(map);
+        // Tampilkan di Console (Tekan F12 di browser untuk melihat)
+        console.log(`Koordinat: lat: ${lat}, lng: ${lng}`);
+        
+        // Tampilkan juga di layar berupa alert agar mudah disalin
+        alert(`Salin angka ini ke graph.js:\n\nlat: ${lat},\nlng: ${lng}`);
     });
 }
 
 function drawRoute(pathIds) {
-    // Hapus garis rute sebelumnya jika ada
     if (routeLine) {
         map.removeLayer(routeLine);
     }
 
     if (pathIds.length === 0) return;
 
-    // Buat array koordinat dari rute yang ditemukan
     const latlngs = pathIds.map(id => [nodes[id].lat, nodes[id].lng]);
 
-    // Gambar garis rute berwarna Merah Menyala
     routeLine = L.polyline(latlngs, {
-        color: '#FF0000', // Merah
+        color: '#FF0000', 
         weight: 7,
         opacity: 1
     }).addTo(map);
 
-    // Zoom peta agar semua rute terlihat
     map.fitBounds(routeLine.getBounds(), { padding: [50, 50] });
 }

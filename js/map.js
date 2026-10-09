@@ -14,7 +14,7 @@ function initMap() {
         [3.5920, 98.6760]  
     ];
 
-    const sketsaImage = 'assets/Gambar Sketsa.jpg'; 
+    const sketsaImage = 'assets/sketsa benar.jpg'; 
     L.imageOverlay(sketsaImage, imageBounds).addTo(map);
 
     map.setMaxBounds(imageBounds);

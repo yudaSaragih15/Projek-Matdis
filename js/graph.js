@@ -1,219 +1,149 @@
 // ====================================================================
-// DATA TITIK (NODE) - KOORDINAT SUDAH DIPISAH AGAR RUTE SELARAS JALAN
+// PENGATURAN PETA (SKETSA)
 // ====================================================================
-const nodes = {
-    // --- GEDUNG (Marker Biru) ---
-    "gedung_12":     { id: "gedung_12",      name: "Gedung 12",       lat: 3.59599, lng: 98.67073, type: "gedung" },
-    "lab_fisika":    { id: "lab_fisika",     name: "Lab. Fisika",     lat: 3.59689, lng: 98.67203, type: "gedung" },
-    "lab_biologi":   { id: "lab_biologi",    name: "Lab. Biologi",    lat: 3.59343, lng: 98.66935, type: "gedung" },
-    "lab_komputer":  { id: "lab_komputer",   name: "Lab. Komputer",   lat: 3.59303, lng: 98.67068, type: "gedung" },
-    "rumah_kaca":    { id: "rumah_kaca",     name: "Rumah Kaca",      lat: 3.59505, lng: 98.67151, type: "gedung" },
-    "lab_kimia":     { id: "lab_kimia",      name: "Lab. Kimia",      lat: 3.59332, lng: 98.67233, type: "gedung" },
-    "bilingual":     { id: "bilingual",      name: "Gedung Bilingual",lat: 3.59302, lng: 98.67405, type: "gedung" },
-    "biologi":       { id: "biologi",        name: "Biologi",         lat: 3.59574, lng: 98.67514, type: "gedung" },
-    "fisika":        { id: "fisika",         name: "Fisika",          lat: 3.59608, lng: 98.67346, type: "gedung" },
-    "gedung_syawal": { id: "gedung_syawal",  name: "Gedung Syawal",   lat: 3.59498, lng: 98.67426, type: "gedung" },
-    "kimia":         { id: "kimia",          name: "Kimia",           lat: 3.59401, lng: 98.67359, type: "gedung" },
-    "matematika":    { id: "matematika",     name: "Matematika",      lat: 3.59393, lng: 98.67511, type: "gedung" },
+// Ukuran asli file "assets/Gambar Sketsa.jpg" (piksel)
+const IMG_WIDTH = 990;
+const IMG_HEIGHT = 709;
 
-    // ================================================================
-    // SIMPANG (Koordinat Berbeda untuk Setiap Titik)
-    // ================================================================
+// Batas gambar di peta Leaflet: [pojok kiri-atas, pojok kanan-bawah]
+const IMAGE_BOUNDS = [
+    [3.5980, 98.6690],
+    [3.5920, 98.6760]
+];
 
-    // --- 1. Rute Gedung 12 (Berjalan ke Timur) ---
-    "s_depan_g12_1": { id: "s_depan_g12_1", name: "Depan G12 1", lat: 3.59599, lng: 98.67090, type: "simpang" },
-    "s_depan_g12_2": { id: "s_depan_g12_2", name: "Depan G12 2", lat: 3.59599, lng: 98.67110, type: "simpang" },
-    "s_depan_g12_3": { id: "s_depan_g12_3", name: "Depan G12 3", lat: 3.59599, lng: 98.67130, type: "simpang" },
-    "s_depan_g12_4": { id: "s_depan_g12_4", name: "Depan G12 4", lat: 3.59599, lng: 98.67150, type: "simpang" },
-    "s_depan_g12_5": { id: "s_depan_g12_5", name: "Depan G12 5", lat: 3.59599, lng: 98.67170, type: "simpang" },
+// Perkiraan skala: 1 piksel pada sketsa = berapa meter.
+// Ubah angka ini kalau ingin jarak (meter) disesuaikan dengan skala asli.
+const METER_PER_PIXEL = 0.4;
 
-    // --- 2. Rute Lab Fisika (Berjalan ke Tenggara) ---
-    "s_depan_lab_fisika_1": { id: "s_depan_lab_fisika_1", name: "Depan LF 1", lat: 3.59680, lng: 98.67210, type: "simpang" },
-    "s_depan_lab_fisika_2": { id: "s_depan_lab_fisika_2", name: "Depan LF 2", lat: 3.59670, lng: 98.67220, type: "simpang" },
-    "s_depan_lab_fisika_3": { id: "s_depan_lab_fisika_3", name: "Depan LF 3", lat: 3.59655, lng: 98.67235, type: "simpang" },
-    "s_depan_lab_fisika_4": { id: "s_depan_lab_fisika_4", name: "Depan LF 4", lat: 3.59640, lng: 98.67250, type: "simpang" },
-    "s_depan_lab_fisika_5": { id: "s_depan_lab_fisika_5", name: "Depan LF 5", lat: 3.59620, lng: 98.67270, type: "simpang" },
+// Ubah koordinat piksel gambar (x, y) menjadi koordinat peta (lat, lng)
+function pxToLatLng(x, y) {
+    const lat = IMAGE_BOUNDS[0][0] + (y / IMG_HEIGHT) * (IMAGE_BOUNDS[1][0] - IMAGE_BOUNDS[0][0]);
+    const lng = IMAGE_BOUNDS[0][1] + (x / IMG_WIDTH)  * (IMAGE_BOUNDS[1][1] - IMAGE_BOUNDS[0][1]);
+    return [lat, lng];
+}
 
-    // --- 3. Rute Rumah Kaca (Berjalan ke Timur Laut) ---
-    "s_depan_rumah_kaca_1": { id: "s_depan_rumah_kaca_1", name: "Depan RK 1", lat: 3.59510, lng: 98.67165, type: "simpang" },
-    "s_depan_rumah_kaca_2": { id: "s_depan_rumah_kaca_2", name: "Depan RK 2", lat: 3.59520, lng: 98.67175, type: "simpang" },
-    "s_depan_rumah_kaca_3": { id: "s_depan_rumah_kaca_3", name: "Depan RK 3", lat: 3.59535, lng: 98.67185, type: "simpang" },
-    "s_depan_rumah_kaca_4": { id: "s_depan_rumah_kaca_4", name: "Depan RK 4", lat: 3.59550, lng: 98.67190, type: "simpang" },
-    "s_depan_rumah_kaca_5": { id: "s_depan_rumah_kaca_5", name: "Depan RK 5", lat: 3.59570, lng: 98.67195, type: "simpang" },
+// ====================================================================
+// DATA TITIK (NODE) = PINTU MASUK TIAP GEDUNG
+// Koordinat (x, y) dalam piksel gambar sketsa, dan SELALU berada di atas
+// jalan (area abu-abu) supaya rute tidak menembus gedung/tembok.
+// ====================================================================
+const nodeData = [
+    { id: "gedung_12", name: "Gedung 12", x: 241, y: 240 },
+    { id: "lab_fisika", name: "Lab. Fisika", x: 418, y: 94 },
+    { id: "lab_biologi", name: "Lab. Biologi", x: 84, y: 417 },
+    { id: "lab_komputer", name: "Lab. Komputer", x: 242, y: 568 },
+    { id: "rumah_kaca", name: "Rumah Kaca", x: 349, y: 400 },
+    { id: "lab_kimia", name: "Lab. Kimia", x: 473, y: 468 },
+    { id: "bilingual", name: "Gedung Bilingual", x: 746, y: 620 },
+    { id: "biologi", name: "Biologi", x: 880, y: 247 },
+    { id: "fisika", name: "Fisika", x: 574, y: 208 },
+    { id: "gedung_syawal", name: "Gedung Syawal", x: 746, y: 356 },
+    { id: "kimia", name: "Kimia", x: 589, y: 489 },
+    { id: "matematika", name: "Matematika", x: 883, y: 520 }
+];
 
-    // --- 4. Rute Lab Biologi (Berjalan ke Timur) ---
-    "s_depan_lab_biologi_1": { id: "s_depan_lab_biologi_1", name: "Depan LB 1", lat: 3.59343, lng: 98.66955, type: "simpang" },
-    "s_depan_lab_biologi_2": { id: "s_depan_lab_biologi_2", name: "Depan LB 2", lat: 3.59343, lng: 98.66975, type: "simpang" },
-    "s_depan_lab_biologi_3": { id: "s_depan_lab_biologi_3", name: "Depan LB 3", lat: 3.59343, lng: 98.66995, type: "simpang" },
-    "s_depan_lab_biologi_4": { id: "s_depan_lab_biologi_4", name: "Depan LB 4", lat: 3.59345, lng: 98.67020, type: "simpang" },
-    "s_depan_lab_biologi_5": { id: "s_depan_lab_biologi_5", name: "Depan LB 5", lat: 3.59347, lng: 98.67050, type: "simpang" },
-
-    // --- 5. Rute Lab Komputer (Berjalan ke Utara) ---
-    "s_depan_lab_komp_1": { id: "s_depan_lab_komp_1", name: "Depan LK 1", lat: 3.59315, lng: 98.67075, type: "simpang" },
-    "s_depan_lab_komp_2": { id: "s_depan_lab_komp_2", name: "Depan LK 2", lat: 3.59325, lng: 98.67080, type: "simpang" },
-    "s_depan_lab_komp_3": { id: "s_depan_lab_komp_3", name: "Depan LK 3", lat: 3.59335, lng: 98.67085, type: "simpang" },
-    "s_depan_lab_komp_4": { id: "s_depan_lab_komp_4", name: "Depan LK 4", lat: 3.59340, lng: 98.67090, type: "simpang" },
-    "s_depan_lab_komp_5": { id: "s_depan_lab_komp_5", name: "Depan LK 5", lat: 3.59345, lng: 98.67095, type: "simpang" },
-
-    // --- 6. Rute Lab Kimia (Berjalan ke Barat Daya) ---
-    "s_depan_lab_kimia_1": { id: "s_depan_lab_kimia_1", name: "Depan LKim 1", lat: 3.59335, lng: 98.67220, type: "simpang" },
-    "s_depan_lab_kimia_2": { id: "s_depan_lab_kimia_2", name: "Depan LKim 2", lat: 3.59340, lng: 98.67195, type: "simpang" },
-    "s_depan_lab_kimia_3": { id: "s_depan_lab_kimia_3", name: "Depan LKim 3", lat: 3.59343, lng: 98.67170, type: "simpang" },
-    "s_depan_lab_kimia_4": { id: "s_depan_lab_kimia_4", name: "Depan LKim 4", lat: 3.59345, lng: 98.67145, type: "simpang" },
-    "s_depan_lab_kimia_5": { id: "s_depan_lab_kimia_5", name: "Depan LKim 5", lat: 3.59347, lng: 98.67120, type: "simpang" },
-
-    // --- 7. Rute Biologi (Berjalan ke Barat Daya) ---
-    "s_depan_biologi_1": { id: "s_depan_biologi_1", name: "Depan Bio 1", lat: 3.59570, lng: 98.67500, type: "simpang" },
-    "s_depan_biologi_2": { id: "s_depan_biologi_2", name: "Depan Bio 2", lat: 3.59560, lng: 98.67480, type: "simpang" },
-    "s_depan_biologi_3": { id: "s_depan_biologi_3", name: "Depan Bio 3", lat: 3.59545, lng: 98.67455, type: "simpang" },
-    "s_depan_biologi_4": { id: "s_depan_biologi_4", name: "Depan Bio 4", lat: 3.59530, lng: 98.67430, type: "simpang" },
-    "s_depan_biologi_5": { id: "s_depan_biologi_5", name: "Depan Bio 5", lat: 3.59515, lng: 98.67405, type: "simpang" },
-
-    // --- 8. Rute Fisika (Berjalan ke Barat Daya) ---
-    "s_depan_fisika_1": { id: "s_depan_fisika_1", name: "Depan Fis 1", lat: 3.59605, lng: 98.67335, type: "simpang" },
-    "s_depan_fisika_2": { id: "s_depan_fisika_2", name: "Depan Fis 2", lat: 3.59595, lng: 98.67320, type: "simpang" },
-    "s_depan_fisika_3": { id: "s_depan_fisika_3", name: "Depan Fis 3", lat: 3.59580, lng: 98.67310, type: "simpang" },
-    "s_depan_fisika_4": { id: "s_depan_fisika_4", name: "Depan Fis 4", lat: 3.59560, lng: 98.67305, type: "simpang" },
-    "s_depan_fisika_5": { id: "s_depan_fisika_5", name: "Depan Fis 5", lat: 3.59540, lng: 98.67300, type: "simpang" },
-
-    // --- 9. Rute Gedung Syawal (Berjalan ke Barat) ---
-    "s_depan_syawal_1": { id: "s_depan_syawal_1", name: "Depan Syw 1", lat: 3.59495, lng: 98.67410, type: "simpang" },
-    "s_depan_syawal_2": { id: "s_depan_syawal_2", name: "Depan Syw 2", lat: 3.59495, lng: 98.67390, type: "simpang" },
-    "s_depan_syawal_3": { id: "s_depan_syawal_3", name: "Depan Syw 3", lat: 3.59495, lng: 98.67370, type: "simpang" },
-    "s_depan_syawal_4": { id: "s_depan_syawal_4", name: "Depan Syw 4", lat: 3.59495, lng: 98.67350, type: "simpang" },
-    "s_depan_syawal_5": { id: "s_depan_syawal_5", name: "Depan Syw 5", lat: 3.59495, lng: 98.67330, type: "simpang" },
-
-    // --- 10. Rute Kimia (Berjalan ke Barat Laut) ---
-    "s_depan_kimia_1": { id: "s_depan_kimia_1", name: "Depan Kim 1", lat: 3.59405, lng: 98.67345, type: "simpang" },
-    "s_depan_kimia_2": { id: "s_depan_kimia_2", name: "Depan Kim 2", lat: 3.59415, lng: 98.67330, type: "simpang" },
-    "s_depan_kimia_3": { id: "s_depan_kimia_3", name: "Depan Kim 3", lat: 3.59430, lng: 98.67318, type: "simpang" },
-    "s_depan_kimia_4": { id: "s_depan_kimia_4", name: "Depan Kim 4", lat: 3.59450, lng: 98.67310, type: "simpang" },
-    "s_depan_kimia_5": { id: "s_depan_kimia_5", name: "Depan Kim 5", lat: 3.59470, lng: 98.67305, type: "simpang" },
-
-    // --- 11. Rute Matematika (Berjalan ke Barat) ---
-    "s_depan_matematika_1": { id: "s_depan_matematika_1", name: "Depan MTK 1", lat: 3.59393, lng: 98.67490, type: "simpang" },
-    "s_depan_matematika_2": { id: "s_depan_matematika_2", name: "Depan MTK 2", lat: 3.59393, lng: 98.67475, type: "simpang" },
-    "s_depan_matematika_3": { id: "s_depan_matematika_3", name: "Depan MTK 3", lat: 3.59393, lng: 98.67460, type: "simpang" },
-    "s_depan_matematika_4": { id: "s_depan_matematika_4", name: "Depan MTK 4", lat: 3.59393, lng: 98.67445, type: "simpang" },
-    "s_depan_matematika_5": { id: "s_depan_matematika_5", name: "Depan MTK 5", lat: 3.59393, lng: 98.67430, type: "simpang" },
-
-    // --- 12. Rute Bilingual (Berjalan ke Utara) ---
-    "s_depan_bilingual_1": { id: "s_depan_bilingual_1", name: "Depan Bil 1", lat: 3.59315, lng: 98.67400, type: "simpang" },
-    "s_depan_bilingual_2": { id: "s_depan_bilingual_2", name: "Depan Bil 2", lat: 3.59325, lng: 98.67400, type: "simpang" },
-    "s_depan_bilingual_3": { id: "s_depan_bilingual_3", name: "Depan Bil 3", lat: 3.59335, lng: 98.67400, type: "simpang" },
-    "s_depan_bilingual_4": { id: "s_depan_bilingual_4", name: "Depan Bil 4", lat: 3.59340, lng: 98.67400, type: "simpang" },
-    "s_depan_bilingual_5": { id: "s_depan_bilingual_5", name: "Depan Bil 5", lat: 3.59345, lng: 98.67400, type: "simpang" },
-
-    // --- PUSAT PERSIMPANGAN (Jaringan Utama) ---
-    "s_pusat_utara":   { id: "s_pusat_utara",   name: "Pusat Utara",   lat: 3.59600, lng: 98.67200, type: "simpang" },
-    "s_pusat_tengah":  { id: "s_pusat_tengah",  name: "Pusat Tengah",  lat: 3.59500, lng: 98.67300, type: "simpang" },
-    "s_pusat_selatan": { id: "s_pusat_selatan", name: "Pusat Selatan", lat: 3.59350, lng: 98.67100, type: "simpang" },
-    "s_pusat_timur":   { id: "s_pusat_timur",   name: "Pusat Timur",   lat: 3.59350, lng: 98.67400, type: "simpang" }
-};
+const nodes = {};
+nodeData.forEach(n => {
+    const [lat, lng] = pxToLatLng(n.x, n.y);
+    nodes[n.id] = { id: n.id, name: n.name, lat: lat, lng: lng, type: "gedung" };
+});
 
 // ====================================================================
 // DATA JALUR (EDGE)
+// (Jalur dihitung ulang otomatis dari gambar sketsa mengikuti posisi pin terbaru:
+//  keluar dari gedung seperlunya, lalu menyusuri jalan abu-abu.)
+// Setiap pasang gedung punya jalur LANGSUNG sendiri (dihitung sebagai jalur
+// terpendek menyusuri jalan pada sketsa), jadi rute tidak perlu singgah ke gedung lain.
+// Tiap edge punya "path": titik-titik belokan (x, y) yang MENGIKUTI JALAN
+// pada sketsa dari node "from" ke node "to". Bobot (meter) dihitung otomatis
+// dari panjang jalur tersebut x METER_PER_PIXEL.
 // ====================================================================
-const edges = [
-    // --- RUTE GEDUNG 12 ---
-    { from: "gedung_12", to: "s_depan_g12_1", weight: 15 },
-    { from: "s_depan_g12_1", to: "s_depan_g12_2", weight: 18 },
-    { from: "s_depan_g12_2", to: "s_depan_g12_3", weight: 18 },
-    { from: "s_depan_g12_3", to: "s_depan_g12_4", weight: 18 },
-    { from: "s_depan_g12_4", to: "s_depan_g12_5", weight: 18 },
-    { from: "s_depan_g12_5", to: "s_pusat_utara", weight: 25 },
-
-    // --- RUTE LAB FISIKA ---
-    { from: "lab_fisika", to: "s_depan_lab_fisika_1", weight: 12 },
-    { from: "s_depan_lab_fisika_1", to: "s_depan_lab_fisika_2", weight: 15 },
-    { from: "s_depan_lab_fisika_2", to: "s_depan_lab_fisika_3", weight: 18 },
-    { from: "s_depan_lab_fisika_3", to: "s_depan_lab_fisika_4", weight: 18 },
-    { from: "s_depan_lab_fisika_4", to: "s_depan_lab_fisika_5", weight: 22 },
-    { from: "s_depan_lab_fisika_5", to: "s_pusat_utara", weight: 30 },
-
-    // --- RUTE RUMAH KACA ---
-    { from: "rumah_kaca", to: "s_depan_rumah_kaca_1", weight: 15 },
-    { from: "s_depan_rumah_kaca_1", to: "s_depan_rumah_kaca_2", weight: 15 },
-    { from: "s_depan_rumah_kaca_2", to: "s_depan_rumah_kaca_3", weight: 18 },
-    { from: "s_depan_rumah_kaca_3", to: "s_depan_rumah_kaca_4", weight: 18 },
-    { from: "s_depan_rumah_kaca_4", to: "s_depan_rumah_kaca_5", weight: 20 },
-    { from: "s_depan_rumah_kaca_5", to: "s_pusat_utara", weight: 25 },
-
-    // --- RUTE LAB BIOLOGI ---
-    { from: "lab_biologi", to: "s_depan_lab_biologi_1", weight: 18 },
-    { from: "s_depan_lab_biologi_1", to: "s_depan_lab_biologi_2", weight: 18 },
-    { from: "s_depan_lab_biologi_2", to: "s_depan_lab_biologi_3", weight: 18 },
-    { from: "s_depan_lab_biologi_3", to: "s_depan_lab_biologi_4", weight: 22 },
-    { from: "s_depan_lab_biologi_4", to: "s_depan_lab_biologi_5", weight: 25 },
-    { from: "s_depan_lab_biologi_5", to: "s_pusat_selatan", weight: 35 },
-
-    // --- RUTE LAB KOMPUTER ---
-    { from: "lab_komputer", to: "s_depan_lab_komp_1", weight: 15 },
-    { from: "s_depan_lab_komp_1", to: "s_depan_lab_komp_2", weight: 12 },
-    { from: "s_depan_lab_komp_2", to: "s_depan_lab_komp_3", weight: 12 },
-    { from: "s_depan_lab_komp_3", to: "s_depan_lab_komp_4", weight: 10 },
-    { from: "s_depan_lab_komp_4", to: "s_depan_lab_komp_5", weight: 10 },
-    { from: "s_depan_lab_komp_5", to: "s_pusat_selatan", weight: 15 },
-
-    // --- RUTE LAB KIMIA ---
-    { from: "lab_kimia", to: "s_depan_lab_kimia_1", weight: 15 },
-    { from: "s_depan_lab_kimia_1", to: "s_depan_lab_kimia_2", weight: 22 },
-    { from: "s_depan_lab_kimia_2", to: "s_depan_lab_kimia_3", weight: 25 },
-    { from: "s_depan_lab_kimia_3", to: "s_depan_lab_kimia_4", weight: 22 },
-    { from: "s_depan_lab_kimia_4", to: "s_depan_lab_kimia_5", weight: 22 },
-    { from: "s_depan_lab_kimia_5", to: "s_pusat_selatan", weight: 15 },
-
-    // --- RUTE BIOLOGI ---
-    { from: "biologi", to: "s_depan_biologi_1", weight: 15 },
-    { from: "s_depan_biologi_1", to: "s_depan_biologi_2", weight: 22 },
-    { from: "s_depan_biologi_2", to: "s_depan_biologi_3", weight: 25 },
-    { from: "s_depan_biologi_3", to: "s_depan_biologi_4", weight: 25 },
-    { from: "s_depan_biologi_4", to: "s_depan_biologi_5", weight: 25 },
-    { from: "s_depan_biologi_5", to: "s_pusat_tengah", weight: 20 },
-
-    // --- RUTE FISIKA ---
-    { from: "fisika", to: "s_depan_fisika_1", weight: 12 },
-    { from: "s_depan_fisika_1", to: "s_depan_fisika_2", weight: 18 },
-    { from: "s_depan_fisika_2", to: "s_depan_fisika_3", weight: 18 },
-    { from: "s_depan_fisika_3", to: "s_depan_fisika_4", weight: 22 },
-    { from: "s_depan_fisika_4", to: "s_depan_fisika_5", weight: 22 },
-    { from: "s_depan_fisika_5", to: "s_pusat_tengah", weight: 15 },
-
-    // --- RUTE GEDUNG SYAWAL ---
-    { from: "gedung_syawal", to: "s_depan_syawal_1", weight: 15 },
-    { from: "s_depan_syawal_1", to: "s_depan_syawal_2", weight: 18 },
-    { from: "s_depan_syawal_2", to: "s_depan_syawal_3", weight: 18 },
-    { from: "s_depan_syawal_3", to: "s_depan_syawal_4", weight: 18 },
-    { from: "s_depan_syawal_4", to: "s_depan_syawal_5", weight: 18 },
-    { from: "s_depan_syawal_5", to: "s_pusat_tengah", weight: 20 },
-
-    // --- RUTE KIMIA ---
-    { from: "kimia", to: "s_depan_kimia_1", weight: 15 },
-    { from: "s_depan_kimia_1", to: "s_depan_kimia_2", weight: 18 },
-    { from: "s_depan_kimia_2", to: "s_depan_kimia_3", weight: 18 },
-    { from: "s_depan_kimia_3", to: "s_depan_kimia_4", weight: 22 },
-    { from: "s_depan_kimia_4", to: "s_depan_kimia_5", weight: 22 },
-    { from: "s_depan_kimia_5", to: "s_pusat_tengah", weight: 25 },
-
-    // --- RUTE MATEMATIKA ---
-    { from: "matematika", to: "s_depan_matematika_1", weight: 18 },
-    { from: "s_depan_matematika_1", to: "s_depan_matematika_2", weight: 15 },
-    { from: "s_depan_matematika_2", to: "s_depan_matematika_3", weight: 15 },
-    { from: "s_depan_matematika_3", to: "s_depan_matematika_4", weight: 15 },
-    { from: "s_depan_matematika_4", to: "s_depan_matematika_5", weight: 15 },
-    { from: "s_depan_matematika_5", to: "s_pusat_timur", weight: 25 },
-
-    // --- RUTE BILINGUAL ---
-    { from: "bilingual", to: "s_depan_bilingual_1", weight: 15 },
-    { from: "s_depan_bilingual_1", to: "s_depan_bilingual_2", weight: 12 },
-    { from: "s_depan_bilingual_2", to: "s_depan_bilingual_3", weight: 12 },
-    { from: "s_depan_bilingual_3", to: "s_depan_bilingual_4", weight: 10 },
-    { from: "s_depan_bilingual_4", to: "s_depan_bilingual_5", weight: 10 },
-    { from: "s_depan_bilingual_5", to: "s_pusat_timur", weight: 15 },
-
-    // --- JALUR ANTAR PUSAT (Jaringan Utama) ---
-    { from: "s_pusat_utara", to: "s_pusat_tengah", weight: 120 },
-    { from: "s_pusat_tengah", to: "s_pusat_selatan", weight: 180 },
-    { from: "s_pusat_selatan", to: "s_pusat_timur", weight: 280 },
-    { from: "s_pusat_tengah", to: "s_pusat_timur", weight: 120 }
+const edgeData = [
+    { from: "gedung_12", to: "lab_fisika", path: [[241,240],[237,161],[240,135],[238,4],[242,0],[488,0],[503,15],[501,91],[498,94],[418,94]] },
+    { from: "gedung_12", to: "lab_biologi", path: [[241,240],[240,350],[237,353],[240,373],[240,417],[230,427],[195,428],[123,428],[116,422],[93,422],[87,416],[84,417]] },
+    { from: "gedung_12", to: "lab_komputer", path: [[241,240],[240,350],[237,353],[237,361],[240,373],[243,553],[246,559],[246,564],[242,568]] },
+    { from: "gedung_12", to: "rumah_kaca", path: [[241,240],[240,350],[237,353],[240,373],[240,416],[250,426],[341,425],[349,417],[349,400]] },
+    { from: "gedung_12", to: "lab_kimia", path: [[241,240],[240,350],[237,353],[237,361],[240,373],[240,416],[250,426],[352,425],[361,435],[361,450],[366,455],[452,456],[467,458],[473,464],[473,468]] },
+    { from: "gedung_12", to: "bilingual", path: [[241,240],[237,348],[237,361],[240,364],[241,417],[250,426],[352,425],[361,435],[360,656],[361,662],[381,684],[555,687],[585,694],[753,693],[758,692],[767,683],[767,664],[758,655],[747,652],[746,620]] },
+    { from: "gedung_12", to: "biologi", path: [[241,240],[238,237],[238,4],[242,0],[730,0],[745,8],[965,12],[977,24],[980,119],[974,125],[935,125],[930,130],[930,228],[919,240],[892,240],[880,247]] },
+    { from: "gedung_12", to: "fisika", path: [[236,123],[253,220],[470,223],[574,208]] },
+    { from: "gedung_12", to: "gedung_syawal", path: [[241,240],[237,161],[240,135],[238,4],[242,0],[488,0],[503,15],[502,96],[505,104],[514,113],[589,113],[597,121],[630,122],[745,251],[763,251],[773,261],[772,319],[752,339],[752,346],[746,356]] },
+    { from: "gedung_12", to: "kimia", path: [[241,240],[240,350],[237,353],[237,361],[240,373],[240,416],[250,426],[532,427],[550,444],[546,457],[569,476],[575,475],[589,489]] },
+    { from: "gedung_12", to: "matematika", path: [[238,352],[239,423],[356,426],[542,431],[605,387],[727,450],[775,456]]},
+    { from: "lab_fisika", to: "lab_biologi", path: [[97,426],[243,425],[236,2],[409,2],[396,75]] },
+    { from: "lab_fisika", to: "lab_komputer", path: [[418,94],[498,94],[564,170],[562,193],[567,198],[567,208],[557,229],[557,243],[586,270],[601,289],[597,333],[587,343],[435,354],[428,361],[427,419],[419,426],[252,427],[242,437],[243,553],[246,559],[246,564],[242,568]] },
+    { from: "lab_fisika", to: "rumah_kaca", path: [[418,94],[498,94],[564,170],[562,193],[567,198],[567,208],[557,229],[557,243],[586,270],[601,289],[597,333],[587,343],[435,354],[428,361],[427,419],[419,426],[361,425],[348,409],[349,400]] },
+    { from: "lab_fisika", to: "lab_kimia", path: [[418,94],[498,94],[503,99],[564,170],[562,193],[567,198],[567,208],[557,229],[557,243],[586,270],[601,289],[597,333],[587,343],[572,343],[564,351],[564,359],[576,376],[575,403],[541,438],[536,450],[529,457],[478,459],[473,468]] },
+    { from: "lab_fisika", to: "bilingual", path: [[418,94],[498,94],[514,113],[589,113],[597,121],[605,122],[668,122],[674,118],[695,118],[707,119],[713,124],[748,123],[785,162],[795,161],[808,148],[819,148],[852,124],[976,125],[981,130],[984,210],[989,217],[989,340],[979,350],[938,360],[929,370],[929,417],[961,469],[963,512],[956,531],[914,578],[914,586],[922,594],[922,604],[886,648],[861,659],[817,658],[797,638],[775,638],[763,630],[758,630],[746,620]] },
+    { from: "lab_fisika", to: "biologi", path: [[418,94],[498,94],[514,113],[589,113],[597,121],[605,122],[668,122],[674,118],[695,118],[707,119],[713,124],[748,123],[785,162],[795,161],[808,148],[819,148],[852,124],[926,125],[930,129],[930,228],[919,240],[892,240],[880,247]] },
+    { from: "lab_fisika", to: "fisika", path: [[418,94],[498,94],[564,170],[562,192],[574,208]] },
+    { from: "lab_fisika", to: "gedung_syawal", path: [[418,94],[498,94],[514,113],[589,113],[597,121],[630,122],[745,251],[763,251],[773,261],[772,268],[751,289],[751,341],[746,356]] },
+    { from: "lab_fisika", to: "kimia", path: [[418,94],[498,94],[564,170],[562,192],[567,198],[567,208],[562,213],[562,221],[557,229],[557,243],[592,276],[601,289],[601,310],[596,334],[598,384],[586,408],[549,448],[546,457],[569,476],[574,475],[589,489]] },
+    { from: "lab_fisika", to: "matematika", path: [[418,94],[498,94],[514,113],[589,113],[597,121],[605,122],[668,122],[674,118],[700,118],[707,119],[713,124],[748,123],[785,162],[795,161],[808,148],[819,148],[852,124],[976,125],[981,130],[983,206],[989,217],[989,340],[978,350],[940,359],[929,370],[929,418],[960,467],[963,515],[953,535],[900,594],[883,611],[869,612],[856,601],[841,581],[841,569],[845,558],[844,540],[850,535],[868,535],[883,520]] },
+    { from: "lab_biologi", to: "lab_komputer", path: [[84,417],[89,416],[95,422],[116,422],[123,428],[231,427],[242,438],[243,553],[246,559],[246,564],[242,568]] },
+    { from: "lab_biologi", to: "rumah_kaca", path: [[84,417],[89,416],[95,422],[116,422],[123,428],[328,426],[341,425],[349,417],[349,400]] },
+    { from: "lab_biologi", to: "lab_kimia", path: [[84,417],[89,416],[95,422],[116,422],[123,428],[352,425],[361,435],[361,450],[366,455],[452,456],[467,458],[473,464],[473,468]] },
+    { from: "lab_biologi", to: "bilingual", path: [[83,425],[362,422],[550,428],[660,449],[769,459],[763,500],[802,552],[796,621],[766,638]]  },
+    { from: "lab_biologi", to: "biologi", path: [[100,418],[540,428],[606,380],[719,363],[792,370],[807,299],[866,268]] },
+    { from: "lab_biologi", to: "fisika", path: [[84,417],[87,416],[93,422],[116,422],[123,428],[419,426],[427,419],[428,361],[435,354],[587,343],[597,333],[601,289],[586,270],[557,243],[557,229],[562,222],[562,215],[569,208],[574,208]] },
+    { from: "lab_biologi", to: "gedung_syawal", path: [[84,417],[87,416],[93,422],[116,422],[123,428],[419,426],[427,419],[428,361],[435,354],[552,344],[588,344],[600,361],[600,376],[628,401],[641,401],[665,379],[684,379],[704,359],[746,356]] },
+    { from: "lab_biologi", to: "kimia", path: [[84,417],[87,416],[93,422],[116,422],[123,428],[314,425],[532,427],[550,444],[546,457],[569,476],[574,475],[589,489]] },
+    { from: "lab_biologi", to: "matematika", path: [[92,422],[351,423],[547,430],[623,461],[663,444],[773,454],[854,465]] },
+    { from: "lab_komputer", to: "rumah_kaca", path: [[242,568],[246,563],[242,437],[252,427],[341,425],[349,417],[349,400]] },
+    { from: "lab_komputer", to: "lab_kimia", path: [[242,568],[246,564],[246,559],[243,553],[242,437],[252,427],[352,425],[361,435],[361,448],[366,455],[452,456],[467,458],[473,464],[473,468]] },
+    { from: "lab_komputer", to: "bilingual", path: [[242,568],[246,564],[246,559],[243,553],[242,437],[252,427],[352,425],[361,435],[360,656],[361,662],[383,685],[555,687],[585,694],[753,693],[758,692],[767,683],[767,664],[758,655],[747,652],[746,620]] },
+    { from: "lab_komputer", to: "biologi", path: [[242,568],[246,564],[246,559],[243,553],[242,437],[252,427],[419,426],[427,419],[428,361],[435,354],[587,343],[597,333],[601,289],[586,270],[557,243],[557,229],[567,208],[567,198],[562,193],[562,187],[566,183],[566,160],[601,122],[668,122],[674,118],[695,118],[707,119],[713,124],[748,123],[785,162],[795,161],[808,148],[819,148],[852,124],[926,125],[930,129],[930,228],[919,240],[892,240],[880,247]] },
+    { from: "lab_komputer", to: "fisika", path: [[242,568],[244,427],[544,426],[647,427],[699,376],[678,260]] },
+    { from: "lab_komputer", to: "gedung_syawal", path: [[242,426],[370,423],[546,421],[611,387],[676,375],[746,356]]},
+    { from: "lab_komputer", to: "kimia", path: [[242,568],[246,564],[246,559],[243,553],[242,437],[252,427],[436,425],[532,427],[550,444],[546,457],[569,476],[574,475],[589,489]] },
+    { from: "lab_komputer", to: "matematika", path: [[242,568],[244,426],[534,422],[599,522],[700,421],[787,423],[861,500]] },
+    { from: "rumah_kaca", to: "bilingual", path: [[349,400],[348,409],[361,435],[360,656],[361,662],[381,684],[555,687],[585,694],[753,693],[758,692],[767,683],[767,664],[758,655],[747,652],[746,620]] },
+    { from: "rumah_kaca", to: "biologi", path: [[349,400],[348,409],[361,425],[419,426],[427,419],[428,361],[435,354],[587,343],[597,333],[601,289],[586,270],[557,243],[557,229],[567,208],[567,198],[562,193],[562,187],[566,183],[566,160],[601,122],[668,122],[674,118],[695,118],[707,119],[713,124],[748,123],[785,162],[795,161],[808,148],[819,148],[852,124],[926,125],[930,129],[930,228],[919,240],[892,240],[880,247]] },
+    { from: "rumah_kaca", to: "fisika", path: [[349,400],[348,409],[361,425],[419,426],[427,419],[428,361],[435,354],[587,343],[597,333],[601,289],[586,270],[557,243],[557,229],[562,222],[562,215],[569,208],[574,208]] },
+    { from: "rumah_kaca", to: "gedung_syawal", path: [[349,400],[348,409],[361,425],[421,425],[428,414],[428,361],[435,354],[443,353],[552,344],[588,344],[600,361],[600,376],[628,401],[641,401],[665,379],[684,379],[704,359],[746,356]] },
+    { from: "rumah_kaca", to: "kimia", path: [[349,400],[348,409],[361,425],[532,427],[550,444],[546,457],[569,476],[574,475],[589,489]] },
+    { from: "rumah_kaca", to: "matematika", path: [[349,400],[348,409],[361,435],[360,656],[361,662],[383,685],[555,687],[585,694],[758,692],[767,683],[767,659],[797,625],[801,559],[807,553],[843,541],[851,534],[867,534],[883,520]] },
+    { from: "lab_kimia", to: "bilingual", path: [[493,457],[530,457],[593,403],[600,340],[695,347],[693,403],[775,406],[765,474],[764,495],[782,512],[798,543],[802,560],[801,579],[800,606],[797,626],[792,638],[773,642],[762,642]] },
+    { from: "lab_kimia", to: "biologi", path: [[494,455],[532,457],[594,401],[599,340],[696,345],[693,403],[776,407],[785,321],[884,264]] },
+    { from: "lab_kimia", to: "fisika", path: [[494,456],[537,457],[568,427],[627,452],[693,402],[695,328],[714,311],[635,252]] },
+    { from: "lab_kimia", to: "gedung_syawal", path: [[494,456],[536,457],[568,428],[593,398],[596,342],[694,349],[696,329],[734,328]] },
+    { from: "lab_kimia", to: "kimia", path: [[490,456],[535,456],[568,421],[600,360],[694,366],[687,466]] },
+    { from: "lab_kimia", to: "matematika", path: [[489,456],[529,458],[591,402],[600,339],[694,345],[694,401],[779,405],[865,478]] },
+    { from: "bilingual", to: "biologi", path: [[753,638],[790,638],[802,560],[797,528],[772,506],[758,483],[758,463],[766,408],[787,404],[788,307],[881,261]] },
+    { from: "bilingual", to: "fisika", path: [[753,640],[791,640],[800,613],[804,552],[790,525],[772,503],[758,471],[763,455],[764,404],[696,397],[691,332],[709,316],[662,271]] },
+    { from: "bilingual", to: "gedung_syawal", path: [[752,640],[787,640],[802,616],[800,584],[800,556],[800,545],[797,533],[787,519],[767,494],[759,468],[764,457],[772,402],[785,398],[784,374],[788,346],[788,327],[767,322]] },
+    { from: "bilingual", to: "kimia", path: [[751,640],[781,640],[798,635],[801,616],[804,593],[801,566],[802,539],[793,522],[772,503],[760,484],[758,457],[766,408],[698,406],[687,406],[631,456]] },
+    { from: "bilingual", to: "matematika", path: [[750,640],[787,637],[799,626],[804,600],[804,570],[797,555],[838,549],[857,525]] },
+    { from: "biologi", to: "fisika", path: [[880,247],[892,240],[919,240],[930,228],[930,129],[926,125],[852,124],[819,148],[808,148],[795,161],[785,162],[748,123],[713,124],[707,119],[695,118],[674,118],[668,122],[601,122],[566,160],[566,183],[562,187],[562,193],[574,208]] },
+    { from: "biologi", to: "gedung_syawal", path: [[880,247],[892,240],[919,240],[930,228],[930,221],[934,217],[980,216],[989,225],[989,340],[978,350],[943,359],[875,355],[746,356]] },
+    { from: "biologi", to: "kimia", path: [[880,247],[892,240],[919,240],[930,228],[930,129],[926,125],[852,124],[819,148],[808,148],[795,161],[785,162],[748,123],[713,124],[707,119],[695,118],[674,118],[668,122],[601,122],[566,160],[566,183],[562,187],[562,193],[567,198],[567,208],[557,229],[557,243],[586,270],[601,289],[601,310],[596,334],[598,384],[587,407],[546,452],[546,457],[554,465],[559,466],[569,476],[575,475],[589,489]] },
+    { from: "biologi", to: "matematika", path: [[880,260],[839,299],[782,307],[781,404],[836,456],[858,475]]},
+    { from: "fisika", to: "gedung_syawal", path: [[574,208],[562,192],[562,187],[566,183],[566,160],[601,122],[630,122],[745,251],[763,251],[773,261],[772,319],[752,339],[752,346],[746,356]] },
+    { from: "fisika", to: "kimia", path: [[574,208],[569,208],[562,215],[562,222],[557,229],[557,243],[586,270],[601,289],[601,310],[596,334],[598,384],[587,407],[546,452],[546,457],[569,476],[575,475],[589,489]] },
+    { from: "fisika", to: "matematika", path: [[584,208],[699,298],[693,357],[699,402],[732,398],[784,403],[784,403],[811,432],[857,475]] },
+    { from: "gedung_syawal", to: "kimia", path: [[746,356],[704,359],[684,379],[665,379],[641,401],[628,401],[612,389],[599,389],[591,397],[587,407],[546,452],[546,457],[554,465],[559,466],[569,476],[575,475],[589,489]] },
+    { from: "gedung_syawal", to: "matematika", path: [[746,356],[754,366],[753,445],[760,460],[760,489],[796,529],[801,546],[807,552],[813,552],[842,542],[850,535],[868,535],[883,520]] },
+    { from: "kimia", to: "matematika", path: [[589,489],[594,498],[592,511],[582,521],[582,532],[586,535],[586,542],[582,549],[582,599],[578,634],[578,687],[585,694],[758,692],[767,683],[767,659],[797,625],[801,559],[807,553],[842,542],[850,535],[868,535],[883,520]] }
 ];
+
+const edges = edgeData.map(e => {
+    let panjangPx = 0;
+    for (let i = 1; i < e.path.length; i++) {
+        panjangPx += Math.hypot(e.path[i][0] - e.path[i - 1][0], e.path[i][1] - e.path[i - 1][1]);
+    }
+    return {
+        from: e.from,
+        to: e.to,
+        weight: Math.round(panjangPx * METER_PER_PIXEL),
+        path: e.path.map(p => pxToLatLng(p[0], p[1]))   // sudah dalam [lat, lng]
+    };
+});
+
+// Ambil bentuk jalur dari node a ke node b (dibalik otomatis jika arahnya berlawanan)
+function getEdgePath(a, b) {
+    for (const e of edges) {
+        if (e.from === a && e.to === b) return e.path;
+        if (e.from === b && e.to === a) return [...e.path].reverse();
+    }
+    return [[nodes[a].lat, nodes[a].lng], [nodes[b].lat, nodes[b].lng]];
+}

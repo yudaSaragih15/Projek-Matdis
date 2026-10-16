@@ -1,27 +1,24 @@
-// ====================================================================
-// ALGORITMA DIJKSTRA - PENCARIAN RUTE TERPENDEK
-// ====================================================================
 function hitungShortestPath(startId, endId, nodes, edges) {
+    // 0. Jalur langsung: kalau ada jalan yang menghubungkan kedua gedung secara
+    //    langsung, pakai itu saja (tidak singgah ke gedung lain di tengah jalan).
+    const langsung = edges.filter(e =>
+        (e.from === startId && e.to === endId) || (e.from === endId && e.to === startId));
+    if (langsung.length > 0) {
+        const terpendek = langsung.reduce((a, b) => (b.weight < a.weight ? b : a));
+        return { path: [startId, endId], distance: terpendek.weight };
+    }
+
     // 1. Buat daftar tetangga (Adjacency List)
     const adjList = {};
     Object.keys(nodes).forEach(nodeId => adjList[nodeId] = []);
     
-    // 2. Isi daftar tetangga dari data edges
     edges.forEach(edge => {
-        // --- PENGAMAN: Cek apakah node asal dan tujuan ada di dalam 'nodes' ---
-        // Jika tidak ada (salah ketik ID), lewati edge ini agar tidak error
-        if (!nodes[edge.from] || !nodes[edge.to]) {
-            console.warn(`Edge tidak valid diabaikan: ${edge.from} -> ${edge.to}`);
-            return; 
-        }
-        // ---------------------------------------------------------------------
-
-        // Karena jalur bisa dua arah (undirected), kita tambahkan kedua arah
+        // Graf tidak berarah (undirected)
         adjList[edge.from].push({ node: edge.to, weight: edge.weight });
         adjList[edge.to].push({ node: edge.from, weight: edge.weight });
     });
 
-    // 3. Inisialisasi jarak (Infinity) dan rute sebelumnya
+    // 2. Inisialisasi jarak (Infinity) dan rute sebelumnya
     const distances = {};
     const previous = {};
     const unvisited = new Set(Object.keys(nodes));
@@ -32,9 +29,8 @@ function hitungShortestPath(startId, endId, nodes, edges) {
     });
     distances[startId] = 0;
 
-    // 4. Proses Utama Dijkstra
+    // 3. Proses Dijkstra
     while (unvisited.size > 0) {
-        // Cari node dengan jarak terkecil yang belum dikunjungi
         let currentNode = null;
         let minDistance = Infinity;
         
@@ -45,12 +41,10 @@ function hitungShortestPath(startId, endId, nodes, edges) {
             }
         });
 
-        // Jika tidak ada jalan atau sudah sampai tujuan
         if (currentNode === null || currentNode === endId) break;
 
         unvisited.delete(currentNode);
 
-        // Update jarak ke tetangga
         adjList[currentNode].forEach(neighbor => {
             if (unvisited.has(neighbor.node)) {
                 const newDistance = distances[currentNode] + neighbor.weight;
@@ -62,7 +56,7 @@ function hitungShortestPath(startId, endId, nodes, edges) {
         });
     }
 
-    // 5. Susun rute dari start ke end
+    // 4. Susun rute
     const path = [];
     let current = endId;
     while (current !== null) {
@@ -70,7 +64,6 @@ function hitungShortestPath(startId, endId, nodes, edges) {
         current = previous[current];
     }
 
-    // Jika rute tidak ditemukan
     if (distances[endId] === Infinity) {
         return { path: [], distance: 0 };
     }

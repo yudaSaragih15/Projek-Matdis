@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Peta FMIPA Unimed - Shortest Path</title>
-
+    
     <!-- 1. Tailwind CSS via CDN (Untuk Tampilan UI) -->
     <script src="https://cdn.tailwindcss.com"></script>
     
@@ -23,6 +23,16 @@
         .leaflet-container {
             background: #000000 !important; /* #000000 adalah kode warna Hitam */
         }
+
+        /* --- Tombol pengalih tampilan 2D / 3D --- */
+        .view-btn {
+            padding: 6px 14px; font-size: 13px; font-weight: 700;
+            background: rgba(255,255,255,0.92); color: #1f2937;
+            border: 1px solid #cbd5e1; cursor: pointer; transition: background .15s;
+        }
+        .view-btn:hover { background: #e2e8f0; }
+        .view-btn[data-aktif="1"] { background: #2563eb; color: #fff; border-color: #2563eb; }
+        #map3d { position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: none; touch-action: none; }
     </style>
 </head>
 <body class="bg-gray-100 font-sans">
@@ -41,21 +51,31 @@
             
             <hr class="my-2 border-gray-200">
 
-            <!-- Dropdown Pilih Titik Awal -->
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Lokasi Awal</label>
                 <select id="start-node" class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 bg-gray-50">
-                    <!-- Opsi ini akan diisi otomatis oleh JavaScript dari file graph.js -->
+                    <!-- Opsi gedung diisi otomatis dari graph.js -->
                 </select>
+                <select id="start-room" class="w-full p-2 mt-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 bg-gray-50 text-sm">
+                    <!-- Opsi ruangan diisi otomatis dari rooms.js -->
+                </select>
+                <input id="start-search" list="daftar-ruangan" type="search" placeholder="Cari ruangan (nomor / nama)..."
+                       class="w-full p-2 mt-2 border border-gray-300 rounded-md text-sm focus:ring-blue-500 focus:border-blue-500" autocomplete="off">
             </div>
 
-            <!-- Dropdown Pilih Titik Tujuan -->
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Lokasi Tujuan</label>
                 <select id="end-node" class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 bg-gray-50">
-                    <!-- Opsi ini akan diisi otomatis oleh JavaScript dari file graph.js -->
+                    <!-- Opsi gedung diisi otomatis dari graph.js -->
                 </select>
+                <select id="end-room" class="w-full p-2 mt-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 bg-gray-50 text-sm">
+                    <!-- Opsi ruangan diisi otomatis dari rooms.js -->
+                </select>
+                <input id="end-search" list="daftar-ruangan" type="search" placeholder="Cari ruangan (nomor / nama)..."
+                       class="w-full p-2 mt-2 border border-gray-300 rounded-md text-sm focus:ring-blue-500 focus:border-blue-500" autocomplete="off">
             </div>
+
+            <datalist id="daftar-ruangan"></datalist>
 
             <!-- Tombol Cari Rute -->
             <button id="find-route-btn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-md transition duration-200 mt-2 shadow-md">
@@ -65,7 +85,8 @@
             <!-- Panel Hasil Pencarian (Awalnya disembunyikan dengan class 'hidden') -->
             <div id="result-panel" class="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-md hidden">
                 <h3 class="font-bold text-gray-800 mb-2">Hasil Rute:</h3>
-                <p id="result-distance" class="text-sm font-semibold text-blue-700 mb-3"></p>
+                <p id="result-distance" class="text-sm font-semibold text-blue-700 mb-1"></p>
+                <p id="result-detail" class="text-xs text-gray-500 mb-3"></p>
                 <ul id="result-path" class="list-decimal list-inside text-sm text-gray-700 space-y-1"></ul>
             </div>
         </div>
@@ -74,6 +95,27 @@
         <div class="w-full md:w-2/3 relative h-1/2 md:h-full">
             <!-- Div ini akan diisi oleh Leaflet.js -->
             <div id="map"></div>
+
+            <!-- Div ini akan diisi oleh Three.js (tampilan 3D) -->
+            <div id="map3d"></div>
+
+            <!-- Pengalih tampilan 2D / 3D -->
+            <div class="absolute top-3 right-3 flex shadow-lg rounded-md overflow-hidden" style="z-index:1000;">
+                <button id="btn-2d" class="view-btn" data-aktif="1">Peta 2D</button>
+                <button id="btn-3d" class="view-btn" data-aktif="0">Tampilan 3D</button>
+            </div>
+
+            <!-- Kontrol khusus 3D -->
+            <div id="kontrol-3d" class="absolute bottom-3 left-3 flex-col gap-2 items-start" style="z-index:1000; display:none;">
+                <div id="panel-lantai" class="flex-wrap gap-1" style="display:none;"></div>
+                <div class="flex gap-2">
+                    <button id="btn-reset-cam" class="view-btn rounded-md shadow-lg">Reset Kamera</button>
+                    <button id="btn-auto-rotate" class="view-btn rounded-md shadow-lg" data-aktif="0">Putar Otomatis</button>
+                </div>
+                <div class="text-xs bg-white/90 text-gray-700 rounded-md px-3 py-1 shadow">
+                    Seret: putar &bull; Scroll: zoom &bull; Klik kanan + seret: geser<br>Klik gedung (Biologi, Gedung 12, Lab. Kimia) untuk melihat lantai &amp; ruangan<br>(matikan "Aktif" di panel Ambil Koordinat agar klik gedung berfungsi)
+                </div>
+            </div>
         </div>
     </div>
 
@@ -83,9 +125,20 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     
     <!-- 2. File JavaScript Proyek Kita (Urutan harus benar seperti ini) -->
+    <!-- Three.js (untuk tampilan 3D) -->
+    <script src="https://unpkg.com/three@0.147.0/build/three.min.js"></script>
+    <script src="https://unpkg.com/three@0.147.0/examples/js/controls/OrbitControls.js"></script>
+
     <script src="js/graph.js"></script>
+    <script src="js/rooms.js"></script>
+    <script src="js/buildings3d.js"></script>
+    <script src="js/interior3d.js"></script>
+    <script src="js/ground-texture.js"></script>
     <script src="js/dijkstra.js"></script>
     <script src="js/map.js"></script>
+    <script src="js/map3d.js"></script>
+    <script src="js/interior-view.js"></script>
+    <script src="js/path-picker.js"></script>
     <script src="js/main.js"></script>
 </body>
 </html>

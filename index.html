@@ -5,129 +5,366 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Peta FMIPA Unimed - Shortest Path</title>
     
-    <!-- 1. Tailwind CSS via CDN (Untuk Tampilan UI) -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- 2. Leaflet CSS via CDN (Untuk Peta) -->
+    <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     
-    <!-- 3. Custom CSS -->
+    <!-- Font Nunito -->
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
     <style>
-        /* Peta harus memenuhi layar */
-        #map { height: 100vh; width: 100%; z-index: 1; }
-        
-        /* Agar sidebar bisa di-scroll jika layar kecil */
-        .sidebar-scroll { max-height: 100vh; overflow-y: auto; }
-        
-        /* --- PERUBAHAN DI SINI: Mengubah background menjadi HITAM --- */
-        .leaflet-container {
-            background: #000000 !important; /* #000000 adalah kode warna Hitam */
+        /* ================= RESET & BASE ================= */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Nunito', sans-serif; background: #e0e5ec; color: #4a5568; height: 100vh; overflow: hidden; }
+
+        /* ================= LAYOUT UTAMA ================= */
+        .app-container { display: flex; height: 100vh; width: 100vw; position: relative; }
+
+        /* ================= SIDEBAR DENGAN STICKY TAB ================= */
+        .sidebar {
+            width: 400px; 
+            background: linear-gradient(180deg, #e0e5ec 0%, #d5dbe2 100%);
+            z-index: 1000; 
+            display: flex; 
+            flex-direction: column; 
+            overflow-y: auto; 
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            position: absolute; 
+            top: 0; bottom: 0; left: 0;
+            box-shadow: 5px 0 20px rgba(0,0,0,0.05);
+            border-right: 1px solid rgba(255,255,255,0.6);
         }
 
-        /* --- Tombol pengalih tampilan 2D / 3D --- */
-        .view-btn {
-            padding: 6px 14px; font-size: 13px; font-weight: 700;
-            background: rgba(255,255,255,0.92); color: #1f2937;
-            border: 1px solid #cbd5e1; cursor: pointer; transition: background .15s;
+        /* State Tertutup: Hanya menyisakan Tab 50px */
+        .sidebar.collapsed { width: 50px; }
+
+        /* Konten Sidebar */
+        .sidebar-content {
+            padding: 30px; opacity: 1; transition: opacity 0.3s ease 0.1s;
+            pointer-events: auto; width: 400px;
         }
-        .view-btn:hover { background: #e2e8f0; }
-        .view-btn[data-aktif="1"] { background: #2563eb; color: #fff; border-color: #2563eb; }
-        #map3d { position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: none; touch-action: none; }
+        .sidebar.collapsed .sidebar-content { opacity: 0; pointer-events: none; visibility: hidden; }
+
+        /* TAB INDICATOR */
+        .tab-indicator {
+            position: absolute; left: 15px; top: 50%; transform: translateY(-50%);
+            display: none; flex-direction: column; gap: 5px; cursor: pointer; z-index: 1002;
+        }
+        .sidebar.collapsed .tab-indicator { display: flex; }
+        .tab-line { width: 20px; height: 2px; background: #a0aec0; border-radius: 2px; transition: all 0.3s; }
+        .sidebar.collapsed:hover .tab-line { background: #667eea; width: 24px; }
+        .sidebar.collapsed:hover { box-shadow: 5px 0 25px rgba(0,0,0,0.1); }
+
+        /* Tombol Close (X) */
+        .close-btn {
+            position: absolute; top: 20px; right: 20px; background: none; border: none; font-size: 24px; 
+            color: #718096; cursor: pointer; line-height: 1; transition: color 0.2s; z-index: 10;
+        }
+        .close-btn:hover { color: #e53e3e; }
+
+        /* Styling Form & Neumorphism */
+        .sidebar-header h1 { font-size: 24px; font-weight: 800; color: #4a5568; text-shadow: 1px 1px 2px #ffffff; margin-bottom: 5px; }
+        .sidebar-header p { font-size: 13px; color: #718096; font-weight: 600; line-height: 1.4; margin-bottom: 20px; }
+        
+        .form-group { display: flex; flex-direction: column; gap: 10px; position: relative; margin-bottom: 15px; }
+        .form-group label { font-size: 14px; font-weight: 700; color: #4a5568; text-shadow: 1px 1px 2px #ffffff; }
+
+        .neu-input, .neu-select {
+            width: 100%; padding: 12px 16px; background: #e0e5ec; border: none; border-radius: 12px;
+            font-size: 14px; font-family: 'Nunito', sans-serif; color: #4a5568; font-weight: 600;
+            box-shadow: inset 4px 4px 8px #b8bec7, inset -4px -4px 8px #ffffff; outline: none; transition: all 0.3s ease;
+        }
+        .neu-input:focus, .neu-select:focus { box-shadow: inset 6px 6px 12px #b8bec7, inset -6px -6px 12px #ffffff; }
+        .neu-select { cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23667eea' d='M6 9L1 4h10z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 16px center; }
+        .neu-input::placeholder { color: #a0aec0; }
+
+        .neu-button {
+            width: 100%; padding: 16px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none; border-radius: 12px; font-size: 16px; font-weight: 800; color: white;
+            font-family: 'Nunito', sans-serif; cursor: pointer;
+            box-shadow: 6px 6px 12px #b8bec7, -6px -6px 12px #ffffff; transition: all 0.2s ease; margin-top: 10px;
+        }
+        .neu-button:hover { transform: translateY(-2px); box-shadow: 8px 8px 16px #b8bec7, -8px -8px 16px #ffffff; }
+        .neu-button:active { transform: translateY(0); box-shadow: inset 4px 4px 8px rgba(0,0,0,0.2), inset -4px -4px 8px rgba(255,255,255,0.1); }
+
+        .result-panel {
+            margin-top: 10px; padding: 20px; background: #e0e5ec; border-radius: 16px;
+            box-shadow: inset 4px 4px 8px #b8bec7, inset -4px -4px 8px #ffffff; display: none;
+        }
+        .result-panel.show { display: block; }
+        .result-panel h3 { font-size: 16px; font-weight: 800; color: #4a5568; margin-bottom: 12px; text-shadow: 1px 1px 2px #ffffff; }
+        .result-panel .distance { font-weight: 800; color: #667eea; font-size: 16px; margin-bottom: 8px; }
+        .result-panel p { font-size: 14px; color: #718096; line-height: 1.6; }
+        .result-panel ul { list-style: none; padding-left: 0; margin-top: 10px; }
+        .result-panel ul li { font-size: 13px; color: #4a5568; padding: 6px 0; border-bottom: 1px solid rgba(160, 174, 192, 0.3); }
+        .result-panel ul li:last-child { border-bottom: none; }
+
+        .swap-btn-container { display: flex; justify-content: center; align-items: center; margin: -5px 0 10px 0; z-index: 10; }
+        .swap-btn {
+            width: 40px; height: 40px; border-radius: 50%; background: #e0e5ec; border: none;
+            box-shadow: 4px 4px 8px #b8bec7, -4px -4px 8px #ffffff; cursor: pointer;
+            display: flex; justify-content: center; align-items: center; transition: all 0.2s ease;
+            color: #667eea; font-size: 18px;
+        }
+        .swap-btn:hover { transform: rotate(180deg); box-shadow: 6px 6px 12px #b8bec7, -6px -6px 12px #ffffff; }
+
+        /* ================= AREA PETA KANAN ================= */
+        .map-container { width: 100%; height: 100%; position: relative; background: #e0e5ec; }
+        #map, #map3d { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+        #map3d { display: none; touch-action: none; }
+        .leaflet-container { background: #e0e5ec !important; }
+
+        .view-toggle { position: absolute; top: 20px; right: 20px; display: flex; gap: 12px; z-index: 1000; }
+        .view-btn {
+            padding: 10px 20px; background: #e0e5ec; border: none; border-radius: 10px;
+            font-size: 14px; font-weight: 700; color: #4a5568; font-family: 'Nunito', sans-serif;
+            cursor: pointer; box-shadow: 4px 4px 8px #b8bec7, -4px -4px 8px #ffffff; transition: all 0.2s ease;
+        }
+        .view-btn:hover { box-shadow: 6px 6px 12px #b8bec7, -6px -6px 12px #ffffff; }
+        .view-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;
+            box-shadow: inset 3px 3px 6px rgba(0,0,0,0.2), inset -3px -3px 6px rgba(255,255,255,0.1);
+        }
+
+        .kontrol-3d {
+            position: absolute; bottom: 20px; left: 20px; display: none; flex-direction: column;
+            gap: 12px; z-index: 1000;
+        }
+        .kontrol-3d .view-btn { font-size: 13px; padding: 8px 16px; }
+        .info-panel {
+            background: #e0e5ec; padding: 12px 16px; border-radius: 10px;
+            box-shadow: 4px 4px 8px #b8bec7, -4px -4px 8px #ffffff; font-size: 12px;
+            color: #718096; line-height: 1.5; max-width: 300px;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar { width: 100%; height: 60vh; top: auto; bottom: 0; border-right: none; border-top: 1px solid rgba(255,255,255,0.6); }
+            .sidebar.collapsed { height: 50px; width: 100%; }
+            .tab-indicator { left: 50%; top: 15px; transform: translateX(-50%) rotate(90deg); }
+            .map-container { height: 40vh; }
+        }
+        
+        .sidebar::-webkit-scrollbar { width: 6px; }
+        .sidebar::-webkit-scrollbar-track { background: transparent; }
+        .sidebar::-webkit-scrollbar-thumb { background: #b8bec7; border-radius: 3px; }
+
+        /* ================= MODAL GALERI FOTO ================= */
+        .photo-modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(74, 85, 104, 0.6); backdrop-filter: blur(5px);
+            z-index: 2000; display: none; justify-content: center; align-items: center;
+            opacity: 0; transition: opacity 0.3s ease;
+        }
+        .photo-modal-overlay.active { display: flex; opacity: 1; }
+
+        .photo-modal-content {
+            background: #e0e5ec; padding: 20px; border-radius: 20px;
+            box-shadow: 10px 10px 20px #b8bec7, -10px -10px 20px #ffffff;
+            max-width: 90%; width: 500px; position: relative;
+            transform: scale(0.9); transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .photo-modal-overlay.active .photo-modal-content { transform: scale(1); }
+
+        .photo-modal-header {
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;
+        }
+        .photo-modal-title { font-size: 18px; font-weight: 800; color: #4a5568; }
+        .photo-modal-close {
+            background: none; border: none; font-size: 24px; color: #718096; cursor: pointer;
+            transition: color 0.2s; line-height: 1;
+        }
+        .photo-modal-close:hover { color: #e53e3e; }
+
+        .photo-container {
+            width: 100%; height: 300px; background: #cbd5e0; border-radius: 12px;
+            overflow: hidden; display: flex; justify-content: center; align-items: center;
+            box-shadow: inset 4px 4px 8px #b8bec7, inset -4px -4px 8px #ffffff;
+        }
+        .photo-container img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .photo-placeholder { color: #718096; font-size: 14px; text-align: center; padding: 20px; }
+
+        /* Tombol Lihat Foto di Sidebar */
+        .btn-view-photo {
+            margin-top: 10px; width: 100%; padding: 10px; 
+            background: #e0e5ec; border: none; border-radius: 10px;
+            font-size: 13px; font-weight: 700; color: #667eea; cursor: pointer;
+            box-shadow: 4px 4px 8px #b8bec7, -4px -4px 8px #ffffff;
+            transition: all 0.2s; display: none;
+        }
+        .btn-view-photo:hover { transform: translateY(-2px); color: #764ba2; }
+        .btn-view-photo.show { display: block; }
+
+        /* ================= CUSTOM POPUP MARKER ================= */
+        .custom-marker-popup .leaflet-popup-content-wrapper {
+            background: #e0e5ec;
+            border-radius: 16px;
+            box-shadow: 6px 6px 12px #b8bec7, -6px -6px 12px #ffffff;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .custom-marker-popup .leaflet-popup-content {
+            margin: 0;
+            width: 280px !important;
+            font-family: 'Nunito', sans-serif;
+        }
+
+        .custom-marker-popup .leaflet-popup-tip {
+            background: #e0e5ec;
+            box-shadow: 2px 2px 4px #b8bec7;
+        }
+
+        .marker-popup-content {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .popup-photo-container {
+            width: 100%;
+            height: 160px;
+            background: #cbd5e0;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .popup-photo {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .popup-text {
+            padding: 12px 16px;
+            background: linear-gradient(180deg, #e0e5ec 0%, #d5dbe2 100%);
+        }
+
+        .popup-text strong {
+            font-size: 15px;
+            font-weight: 800;
+            color: #4a5568;
+            text-shadow: 1px 1px 2px #ffffff;
+        }
+
+        .popup-text span {
+            font-size: 12px;
+            color: #718096;
+            line-height: 1.4;
+            display: block;
+            margin-top: 4px;
+        }
+
+        /* Override default Leaflet popup close button */
+        .custom-marker-popup .leaflet-popup-close-button {
+            color: #718096 !important;
+            font-size: 20px !important;
+            padding: 8px !important;
+            transition: color 0.2s;
+        }
+        .custom-marker-popup .leaflet-popup-close-button:hover {
+            color: #e53e3e !important;
+        }
     </style>
 </head>
-<body class="bg-gray-100 font-sans">
+<body>
 
-    <!-- Container Utama (Flexbox untuk membagi layar) -->
-    <div class="flex flex-col md:flex-row h-screen w-screen overflow-hidden">
-        
-        <!-- ================= SIDEBAR KIRI (Panel Kontrol) ================= -->
-        <div class="w-full md:w-1/3 bg-white shadow-xl z-10 p-6 flex flex-col gap-4 sidebar-scroll">
+    <div class="app-container">
+        <!-- ================= SIDEBAR KIRI ================= -->
+        <div class="sidebar" id="sidebar">
             
-            <!-- Judul Aplikasi -->
-            <div>
-                <h1 class="text-2xl font-bold text-gray-800">Navigasi FMIPA Unimed</h1>
-                <p class="text-sm text-gray-500 mt-1">Sistem Pencarian Rute Terpendek (Algoritma Dijkstra)</p>
-            </div>
-            
-            <hr class="my-2 border-gray-200">
-
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Lokasi Awal</label>
-                <select id="start-node" class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 bg-gray-50">
-                    <!-- Opsi gedung diisi otomatis dari graph.js -->
-                </select>
-                <select id="start-room" class="w-full p-2 mt-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 bg-gray-50 text-sm">
-                    <!-- Opsi ruangan diisi otomatis dari rooms.js -->
-                </select>
-                <input id="start-search" list="daftar-ruangan" type="search" placeholder="Cari ruangan (nomor / nama)..."
-                       class="w-full p-2 mt-2 border border-gray-300 rounded-md text-sm focus:ring-blue-500 focus:border-blue-500" autocomplete="off">
+            <!-- Tab Indicator -->
+            <div class="tab-indicator" id="tab-opener">
+                <div class="tab-line"></div>
+                <div class="tab-line"></div>
+                <div class="tab-line"></div>
             </div>
 
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Lokasi Tujuan</label>
-                <select id="end-node" class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 bg-gray-50">
-                    <!-- Opsi gedung diisi otomatis dari graph.js -->
-                </select>
-                <select id="end-room" class="w-full p-2 mt-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 bg-gray-50 text-sm">
-                    <!-- Opsi ruangan diisi otomatis dari rooms.js -->
-                </select>
-                <input id="end-search" list="daftar-ruangan" type="search" placeholder="Cari ruangan (nomor / nama)..."
-                       class="w-full p-2 mt-2 border border-gray-300 rounded-md text-sm focus:ring-blue-500 focus:border-blue-500" autocomplete="off">
-            </div>
+            <!-- Konten Utama Sidebar -->
+            <div class="sidebar-content">
+                <div class="sidebar-header">
+                    <h1>Navigasi FMIPA Unimed</h1>
+                    <p>Sistem Pencarian Rute Terpendek (Algoritma Dijkstra)</p>
+                    <button class="close-btn" id="btn-close-sidebar" title="Tutup Sidebar">&times;</button>
+                </div>
 
-            <datalist id="daftar-ruangan"></datalist>
+                <div class="form-group">
+                    <label>Lokasi Awal</label>
+                    <select id="start-node" class="neu-select"></select>
+                    <select id="start-room" class="neu-select"></select>
+                    <input id="start-search" list="daftar-ruangan" type="search" placeholder="Cari ruangan (nomor / nama)..." class="neu-input" autocomplete="off">
+                </div>
 
-            <!-- Tombol Cari Rute -->
-            <button id="find-route-btn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-md transition duration-200 mt-2 shadow-md">
-                Cari Rute Terpendek
-            </button>
+                <div class="swap-btn-container">
+                    <button id="swap-locations" class="swap-btn" title="Tukar Lokasi Awal & Tujuan">↻</button>
+                </div>
 
-            <!-- Panel Hasil Pencarian (Awalnya disembunyikan dengan class 'hidden') -->
-            <div id="result-panel" class="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-md hidden">
-                <h3 class="font-bold text-gray-800 mb-2">Hasil Rute:</h3>
-                <p id="result-distance" class="text-sm font-semibold text-blue-700 mb-1"></p>
-                <p id="result-detail" class="text-xs text-gray-500 mb-3"></p>
-                <ul id="result-path" class="list-decimal list-inside text-sm text-gray-700 space-y-1"></ul>
+                <div class="form-group">
+                    <label>Lokasi Tujuan</label>
+                    <select id="end-node" class="neu-select"></select>
+                    <select id="end-room" class="neu-select"></select>
+                    <input id="end-search" list="daftar-ruangan" type="search" placeholder="Cari ruangan (nomor / nama)..." class="neu-input" autocomplete="off">
+                </div>
+
+                <datalist id="daftar-ruangan"></datalist>
+
+                <!-- TOMBOL LIHAT FOTO BARU -->
+                <button id="btn-show-photo" class="btn-view-photo" onclick="showPhotoModal()">📷 Lihat Foto Lokasi</button>
+
+                <button id="find-route-btn" class="neu-button">Cari Rute Terpendek</button>
+
+                <div id="result-panel" class="result-panel">
+                    <h3>Hasil Rute:</h3>
+                    <p id="result-distance" class="distance"></p>
+                    <p id="result-detail"></p>
+                    <ul id="result-path"></ul>
+                </div>
             </div>
         </div>
 
-        <!-- ================= PETA (Area Kanan) ================= -->
-        <div class="w-full md:w-2/3 relative h-1/2 md:h-full">
-            <!-- Div ini akan diisi oleh Leaflet.js -->
+        <!-- ================= PETA KANAN ================= -->
+        <div class="map-container">
             <div id="map"></div>
-
-            <!-- Div ini akan diisi oleh Three.js (tampilan 3D) -->
             <div id="map3d"></div>
-
-            <!-- Pengalih tampilan 2D / 3D -->
-            <div class="absolute top-3 right-3 flex shadow-lg rounded-md overflow-hidden" style="z-index:1000;">
-                <button id="btn-2d" class="view-btn" data-aktif="1">Peta 2D</button>
+            <div class="view-toggle">
+                <button id="btn-2d" class="view-btn active" data-aktif="1">Peta 2D</button>
                 <button id="btn-3d" class="view-btn" data-aktif="0">Tampilan 3D</button>
             </div>
-
-            <!-- Kontrol khusus 3D -->
-            <div id="kontrol-3d" class="absolute bottom-3 left-3 flex-col gap-2 items-start" style="z-index:1000; display:none;">
-                <div id="panel-lantai" class="flex-wrap gap-1" style="display:none;"></div>
-                <div class="flex gap-2">
-                    <button id="btn-reset-cam" class="view-btn rounded-md shadow-lg">Reset Kamera</button>
-                    <button id="btn-auto-rotate" class="view-btn rounded-md shadow-lg" data-aktif="0">Putar Otomatis</button>
+            <div id="kontrol-3d" class="kontrol-3d">
+                <div id="panel-lantai"></div>
+                <div style="display: flex; gap: 12px;">
+                    <button id="btn-reset-cam" class="view-btn">Reset Kamera</button>
+                    <button id="btn-auto-rotate" class="view-btn" data-aktif="0">Putar Otomatis</button>
                 </div>
-                <div class="text-xs bg-white/90 text-gray-700 rounded-md px-3 py-1 shadow">
-                    Seret: putar &bull; Scroll: zoom &bull; Klik kanan + seret: geser<br>Klik gedung (Biologi, Gedung 12, Lab. Kimia) untuk melihat lantai &amp; ruangan<br>(matikan "Aktif" di panel Ambil Koordinat agar klik gedung berfungsi)
+                <div class="info-panel">
+                    Seret: putar &bull; Scroll: zoom &bull; Klik kanan + seret: geser<br>
+                    Klik gedung untuk melihat lantai & ruangan
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- MODAL GALERI FOTO -->
+    <div id="photo-modal" class="photo-modal-overlay">
+        <div class="photo-modal-content">
+            <div class="photo-modal-header">
+                <span id="modal-room-name" class="photo-modal-title">Nama Ruangan</span>
+                <button id="modal-close-btn" class="photo-modal-close">&times;</button>
+            </div>
+            <div class="photo-container">
+                <img id="modal-room-img" src="" alt="Foto Ruangan">
+                <div id="modal-no-photo" class="photo-placeholder" style="display:none;">
+                    📷 Foto belum tersedia untuk lokasi ini.
+                </div>
+            </div>
+            <p id="modal-room-desc" style="margin-top:15px; font-size:13px; color:#718096; line-height:1.5;"></p>
+        </div>
+    </div>
+
     <!-- ================= JAVASCRIPT ================= -->
-    
-    <!-- 1. Leaflet JS via CDN (Harus dimuat pertama) -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    
-    <!-- 2. File JavaScript Proyek Kita (Urutan harus benar seperti ini) -->
-    <!-- Three.js (untuk tampilan 3D) -->
     <script src="https://unpkg.com/three@0.147.0/build/three.min.js"></script>
     <script src="https://unpkg.com/three@0.147.0/examples/js/controls/OrbitControls.js"></script>
-
     <script src="js/graph.js"></script>
     <script src="js/rooms.js"></script>
     <script src="js/buildings3d.js"></script>

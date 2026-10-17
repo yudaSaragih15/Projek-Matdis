@@ -1,16 +1,18 @@
 // ====================================================================
-// DATA RUANGAN PER GEDUNG
-// b = id gedung (sama dengan id di graph.js), f = lantai, c = nomor ruangan, n = nama
-// Tambah ruangan baru cukup dengan menambah baris di daftar "rooms".
+// DATA RUANGAN PER GEDUNG (SUDAH DIUPDATE DENGAN SLOT FOTO)
+// b = id gedung, f = lantai, c = nomor ruangan, n = nama
+// image = path foto (relatif terhadap index.html). 
+//         Biarkan kosong/hapus jika belum ada foto untuk ruangan tersebut.
 // ====================================================================
 const rooms = [
-    {"b": "fisika", "f": 1, "c": "004.1.01", "n": "Ruang Administrasi Jurusan"},
+    // --- FISIKA ---
+    {"b": "fisika", "f": 1, "c": "004.1.01", "n": "Ruang Administrasi Jurusan", "image": "assets/foto/fisika-admin.jpg"},
     {"b": "fisika", "f": 1, "c": "004.1.02", "n": "Ruang Tunggu"},
     {"b": "fisika", "f": 1, "c": "04.1.04-04.1.05", "n": "Toilet Pria Dan Wanita"},
     {"b": "fisika", "f": 1, "c": "004.1.6-004.01.09", "n": "Toilet Dosen"},
     {"b": "fisika", "f": 1, "c": "004.1.07", "n": "Pantry"},
     {"b": "fisika", "f": 1, "c": "004.1.8", "n": "Ruang Panel"},
-    {"b": "fisika", "f": 1, "c": "004.1.10", "n": "Ruang Rapat Jurusan"},
+    {"b": "fisika", "f": 1, "c": "004.1.10", "n": "Ruang Rapat Jurusan", "image": "assets/foto/fisika-rapat.jpg"},
     {"b": "fisika", "f": 1, "c": "004.1.12", "n": "Ruang Kaprodi"},
     {"b": "fisika", "f": 1, "c": "004.1.13-004.1.03", "n": "Tangga Darurat"},
     {"b": "fisika", "f": 1, "c": "004.1.14", "n": "Lift"},
@@ -25,7 +27,7 @@ const rooms = [
     {"b": "fisika", "f": 3, "c": "004.3.09", "n": "Toilet Dosen"},
     {"b": "fisika", "f": 3, "c": "004.3.10", "n": "Ruang Kelas"},
     {"b": "fisika", "f": 3, "c": "004.3.11", "n": "Tangga Darurat"},
-    {"b": "fisika", "f": 4, "c": "", "n": "Mushola"},
+    {"b": "fisika", "f": 4, "c": "", "n": "Mushola", "image": "assets/foto/fisika-mushola.jpg"},
     {"b": "fisika", "f": 4, "c": "004.4.1-004.1.2", "n": "Ruang Belajar"},
     {"b": "fisika", "f": 4, "c": "004.4.09-10-11", "n": "Ruang Penguji"},
     {"b": "fisika", "f": 5, "c": "004.5.01", "n": "Ruang Kelas"},
@@ -47,7 +49,9 @@ const rooms = [
     {"b": "fisika", "f": 8, "c": "004.8.02", "n": "Ruang Pre Function"},
     {"b": "fisika", "f": 8, "c": "004.8.03", "n": "Ruang Serbaguna"},
     {"b": "fisika", "f": 8, "c": "004.8.03.1", "n": "Tangga Darurat"},
-    {"b": "matematika", "f": 1, "c": "002.1.01", "n": "Ruang Administrasi Jurusan"},
+
+    // --- MATEMATIKA ---
+    {"b": "matematika", "f": 1, "c": "002.1.01", "n": "Ruang Administrasi Jurusan", "image": "assets/foto/matematika-admin.jpg"},
     {"b": "matematika", "f": 1, "c": "002.1.02", "n": "Ruang Tunggu"},
     {"b": "matematika", "f": 1, "c": "002.1.03", "n": "Tangga Darurat"},
     {"b": "matematika", "f": 1, "c": "002.1.4", "n": "Kamar Mandi Perempuan"},
@@ -91,7 +95,7 @@ const rooms = [
     {"b": "matematika", "f": 4, "c": "002.4.3", "n": "Tangga Darurat"},
     {"b": "matematika", "f": 4, "c": "002.4.4", "n": "Kamar Mandi Perempuan"},
     {"b": "matematika", "f": 4, "c": "002.4.5", "n": "Kamar Mandi Laki-laki"},
-    {"b": "matematika", "f": 4, "c": "002.4.6", "n": "Mushola"},
+    {"b": "matematika", "f": 4, "c": "002.4.6", "n": "Mushola", "image": "assets/foto/matematika-mushola.jpg"},
     {"b": "matematika", "f": 4, "c": "002.4.7", "n": "Tempat Wudhu"},
     {"b": "matematika", "f": 4, "c": "002.4.8", "n": "Pantry"},
     {"b": "matematika", "f": 4, "c": "002.4.9", "n": "Ruang Panel"},
@@ -147,17 +151,19 @@ const rooms = [
     {"b": "matematika", "f": 8, "c": "002.8.2", "n": "Koridor"},
     {"b": "matematika", "f": 8, "c": "002.8.14", "n": "Tangga Darurat"},
     {"b": "matematika", "f": 8, "c": "002.8.15", "n": "Lift"},
-    {"b": "lab_fisika", "f": 1, "c": "008.1", "n": "Lobby"},
+
+    // --- LAB FISIKA ---
+    {"b": "lab_fisika", "f": 1, "c": "008.1", "n": "Lobby", "image": "assets/foto/lab-fisika-lobby.jpg"},
     {"b": "lab_fisika", "f": 1, "c": "008.1.01", "n": "Ruang Laboran"},
     {"b": "lab_fisika", "f": 1, "c": "008.1.02", "n": "Ruang Rapat"},
-    {"b": "lab_fisika", "f": 1, "c": "008.1.03", "n": "Ruang Penelitian SEM"},
+    {"b": "lab_fisika", "f": 1, "c": "008.1.03", "n": "Ruang Penelitian SEM", "image": "assets/foto/lab-fisika-sem.jpg"},
     {"b": "lab_fisika", "f": 1, "c": "008.1.04", "n": "Toilet Perempuan"},
     {"b": "lab_fisika", "f": 1, "c": "008.1.05", "n": "Janitor"},
     {"b": "lab_fisika", "f": 1, "c": "008.1.06", "n": "Ruang Panel"},
     {"b": "lab_fisika", "f": 1, "c": "008.1.07", "n": "Toilet Laki-laki"},
-    {"b": "lab_fisika", "f": 1, "c": "008.1.08", "n": "Lab Material"},
+    {"b": "lab_fisika", "f": 1, "c": "008.1.08", "n": "Lab Material", "image": "assets/foto/lab-fisika-material.jpg"},
     {"b": "lab_fisika", "f": 1, "c": "008.1.10", "n": "Ruang Laboran"},
-    {"b": "lab_fisika", "f": 2, "c": "008.2.01", "n": "Lab Listrik"},
+    {"b": "lab_fisika", "f": 2, "c": "008.2.01", "n": "Lab Listrik", "image": "assets/foto/lab-fisika-listrik.jpg"},
     {"b": "lab_fisika", "f": 2, "c": "008.2.02", "n": "Ruang Lab"},
     {"b": "lab_fisika", "f": 2, "c": "008.2.03", "n": "Lab Media Pembelajaran"},
     {"b": "lab_fisika", "f": 2, "c": "008.2.04", "n": "Lab Komputer"},
@@ -186,15 +192,17 @@ const rooms = [
     {"b": "lab_fisika", "f": 4, "c": "008.4", "n": "Koridor"},
     {"b": "lab_fisika", "f": 4, "c": "008.4.01", "n": "Ruang Panel"},
     {"b": "lab_fisika", "f": 4, "c": "008.4.02", "n": "Ground Tank"},
-    {"b": "lab_fisika", "f": 4, "c": "008.4.03", "n": "Ruang Astronomi"},
+    {"b": "lab_fisika", "f": 4, "c": "008.4.03", "n": "Ruang Astronomi", "image": "assets/foto/lab-fisika-astronomi.jpg"},
     {"b": "lab_fisika", "f": 4, "c": "008.4.04", "n": "Gudang"},
     {"b": "lab_fisika", "f": 4, "c": "008.4.05", "n": "Toilet"},
     {"b": "lab_fisika", "f": 4, "c": "008.4.06", "n": "Janitor"},
     {"b": "lab_fisika", "f": 4, "c": "008.4.07", "n": "Gudang"},
     {"b": "lab_fisika", "f": 4, "c": "008.4.08", "n": "Hall Luar"},
+
+    // --- LAB BIOLOGI ---
     {"b": "lab_biologi", "f": 1, "c": "", "n": "Kantin"},
     {"b": "lab_biologi", "f": 1, "c": "010.1", "n": "Koridor"},
-    {"b": "lab_biologi", "f": 1, "c": "010.1.01", "n": "Lab Mikrobiologi"},
+    {"b": "lab_biologi", "f": 1, "c": "010.1.01", "n": "Lab Mikrobiologi", "image": "assets/foto/lab-bio-mikro.jpg"},
     {"b": "lab_biologi", "f": 1, "c": "010.1.02", "n": "Ruang Laboran"},
     {"b": "lab_biologi", "f": 1, "c": "010.1.03", "n": "Ruang Furnace"},
     {"b": "lab_biologi", "f": 1, "c": "010.1.04", "n": "Kamar Mandi Pria"},
@@ -202,7 +210,7 @@ const rooms = [
     {"b": "lab_biologi", "f": 1, "c": "010.1.06", "n": "Pantry"},
     {"b": "lab_biologi", "f": 1, "c": "010.1.07", "n": "Ruang Laboran"},
     {"b": "lab_biologi", "f": 1, "c": "010.1.08", "n": "Lab Bio Kimia"},
-    {"b": "lab_biologi", "f": 1, "c": "011.1", "n": "Lobby"},
+    {"b": "lab_biologi", "f": 1, "c": "011.1", "n": "Lobby", "image": "assets/foto/lab-bio-lobby.jpg"},
     {"b": "lab_biologi", "f": 1, "c": "011.1.01", "n": "Ruang Klinik"},
     {"b": "lab_biologi", "f": 1, "c": "011.1.02", "n": "Lab Genetika"},
     {"b": "lab_biologi", "f": 1, "c": "011.1.03", "n": "Ruang Laboran"},
@@ -264,7 +272,9 @@ const rooms = [
     {"b": "lab_biologi", "f": 4, "c": "011.4.09", "n": "Lab IPA Terpadu"},
     {"b": "lab_biologi", "f": 4, "c": "176.4.06", "n": "Janitor"},
     {"b": "lab_biologi", "f": 4, "c": "176.4.09", "n": "Ruang Panel"},
-    {"b": "lab_komputer", "f": 1, "c": "009.01.01", "n": "Lab Jaringan"},
+
+    // --- LAB KOMPUTER ---
+    {"b": "lab_komputer", "f": 1, "c": "009.01.01", "n": "Lab Jaringan", "image": "assets/foto/lab-kom-jaringan.jpg"},
     {"b": "lab_komputer", "f": 1, "c": "009.01.02", "n": "Ruang HMJ"},
     {"b": "lab_komputer", "f": 1, "c": "009.01.03", "n": "Ruang Pusat Bisnis"},
     {"b": "lab_komputer", "f": 1, "c": "009.01.04", "n": "Ruang Riset Dan Pengabdian Masyarakat"},
@@ -288,8 +298,10 @@ const rooms = [
     {"b": "lab_komputer", "f": 3, "c": "009.3.07", "n": "Gudang Bahan 2"},
     {"b": "lab_komputer", "f": 3, "c": "009.3.08", "n": "Kamar Mandi"},
     {"b": "lab_komputer", "f": 3, "c": "009.3.09", "n": "Ruang Multimedia Dan Game Development"},
+
+    // --- LAB KIMIA ---
     {"b": "lab_kimia", "f": 1, "c": "007.01.01", "n": "Ruang Penelitian Kimia Fisika Dan Anorganik"},
-    {"b": "lab_kimia", "f": 1, "c": "007.01.02", "n": "Ruang Praktikum Kimia Umum"},
+    {"b": "lab_kimia", "f": 1, "c": "007.01.02", "n": "Ruang Praktikum Kimia Umum", "image": "assets/foto/lab-kimia-praktikum.jpg"},
     {"b": "lab_kimia", "f": 1, "c": "007.01.06", "n": "Ruang Persiapan Lt1 Dan Dapur"},
     {"b": "lab_kimia", "f": 1, "c": "007.01.08", "n": "Ruang Praktikum Kimia Umum"},
     {"b": "lab_kimia", "f": 1, "c": "007.01.011", "n": "Ruang Seminar Lab"},
@@ -316,10 +328,12 @@ const rooms = [
     {"b": "lab_kimia", "f": 3, "c": "007.03.11", "n": "Ruang Praktikum Kimia Organik"},
     {"b": "lab_kimia", "f": 3, "c": "007.03.14", "n": "Ruang Persiapan Lt 3"},
     {"b": "lab_kimia", "f": 3, "c": "007.03.15", "n": "Ruang Persiapan Mikrobiologi"},
+
+    // --- GEDUNG 12 ---
     {"b": "gedung_12", "f": 1, "c": "12.01.01", "n": ""},
     {"b": "gedung_12", "f": 1, "c": "12.01.02", "n": ""},
-    {"b": "gedung_12", "f": 1, "c": "12.01.06", "n": "Ruang Baca FMIPA"},
-    {"b": "gedung_12", "f": 1, "c": "12.01.07", "n": "Kantor Dekan"},
+    {"b": "gedung_12", "f": 1, "c": "12.01.06", "n": "Ruang Baca FMIPA", "image": "assets/foto/gedung12-perpus.jpg"},
+    {"b": "gedung_12", "f": 1, "c": "12.01.07", "n": "Kantor Dekan", "image": "assets/foto/gedung12-dekan.jpg"},
     {"b": "gedung_12", "f": 1, "c": "12.01.08", "n": "Toilet"},
     {"b": "gedung_12", "f": 1, "c": "12.01.09", "n": ""},
     {"b": "gedung_12", "f": 1, "c": "12.01.10", "n": ""},
@@ -343,8 +357,10 @@ const rooms = [
     {"b": "gedung_12", "f": 2, "c": "12.02.13", "n": ""},
     {"b": "gedung_12", "f": 2, "c": "12.02.14", "n": ""},
     {"b": "gedung_12", "f": 2, "c": "12.02.15", "n": ""},
+
+    // --- GEDUNG SYAWAL ---
     {"b": "gedung_syawal", "f": 1, "c": "", "n": "Ruang Arsip"},
-    {"b": "gedung_syawal", "f": 1, "c": "001.01", "n": "Hall/Lobby Utama"},
+    {"b": "gedung_syawal", "f": 1, "c": "001.01", "n": "Hall/Lobby Utama", "image": "assets/foto/syawal-lobby.jpg"},
     {"b": "gedung_syawal", "f": 1, "c": "001.01.03", "n": "Pantry"},
     {"b": "gedung_syawal", "f": 1, "c": "001.01.04", "n": "Toilet Disabilitas"},
     {"b": "gedung_syawal", "f": 1, "c": "001.01.05", "n": "Toilet Wanita"},
@@ -365,7 +381,7 @@ const rooms = [
     {"b": "gedung_syawal", "f": 3, "c": "", "n": "Aula C"},
     {"b": "gedung_syawal", "f": 3, "c": "", "n": "Tangga Timur"},
     {"b": "gedung_syawal", "f": 3, "c": "001.03", "n": "Hall"},
-    {"b": "gedung_syawal", "f": 3, "c": "001.03.01", "n": "Aula A"},
+    {"b": "gedung_syawal", "f": 3, "c": "001.03.01", "n": "Aula A", "image": "assets/foto/syawal-aula.jpg"},
     {"b": "gedung_syawal", "f": 3, "c": "001.03.03", "n": "Panel"},
     {"b": "gedung_syawal", "f": 3, "c": "001.03.04", "n": "Pantry"},
     {"b": "gedung_syawal", "f": 3, "c": "001.03.05", "n": "Toilet Disabilitas"},
@@ -374,6 +390,8 @@ const rooms = [
     {"b": "gedung_syawal", "f": 3, "c": "001.03.12", "n": "Gudang"},
     {"b": "gedung_syawal", "f": 3, "c": "001.03.13", "n": "Aula D"},
     {"b": "gedung_syawal", "f": 3, "c": "001.03.14", "n": "Balkon"},
+
+    // --- KIMIA ---
     {"b": "kimia", "f": 1, "c": "003.1.02", "n": ""},
     {"b": "kimia", "f": 1, "c": "003.1.03", "n": "Toilet Wanita"},
     {"b": "kimia", "f": 1, "c": "003.1.04", "n": "Toilet Pria"},
@@ -382,7 +400,7 @@ const rooms = [
     {"b": "kimia", "f": 1, "c": "003.1.07", "n": "Ruang Panel"},
     {"b": "kimia", "f": 1, "c": "003.1.08", "n": "Pantry"},
     {"b": "kimia", "f": 1, "c": "003.1.09", "n": "Ruang Control"},
-    {"b": "kimia", "f": 1, "c": "003.1.10", "n": "Ruang Kepala Lab Kimia"},
+    {"b": "kimia", "f": 1, "c": "003.1.10", "n": "Ruang Kepala Lab Kimia", "image": "assets/foto/kimia-kepala-lab.jpg"},
     {"b": "kimia", "f": 1, "c": "003.1.11", "n": "Ruang Ka.prodi Kimia"},
     {"b": "kimia", "f": 1, "c": "003.1.12", "n": "Ruang Ka.prodi Pendidikan Kimia"},
     {"b": "kimia", "f": 1, "c": "003.1.13", "n": "Tangga Darurat"},
@@ -428,7 +446,7 @@ const rooms = [
     {"b": "kimia", "f": 4, "c": "003.4.08", "n": "Lift Mahasiswa"},
     {"b": "kimia", "f": 4, "c": "003.4.09", "n": "Lift Dosen"},
     {"b": "kimia", "f": 4, "c": "003.4.10", "n": "Lift Dosen"},
-    {"b": "kimia", "f": 5, "c": "003.5", "n": "Lobby"},
+    {"b": "kimia", "f": 5, "c": "003.5", "n": "Lobby", "image": "assets/foto/kimia-lobby.jpg"},
     {"b": "kimia", "f": 5, "c": "003.5.01", "n": "Ruang Kelas"},
     {"b": "kimia", "f": 5, "c": "003.5.02", "n": "Ruang Kelas"},
     {"b": "kimia", "f": 5, "c": "003.5.03", "n": "Toilet Wanita"},
@@ -475,7 +493,9 @@ const rooms = [
     {"b": "kimia", "f": 10, "c": "003.10.04", "n": "Tangga Darurat"},
     {"b": "kimia", "f": 10, "c": "003.10.05", "n": "Lift Mahasiswa"},
     {"b": "kimia", "f": 10, "c": "003.10.06", "n": "Lift Dosen"},
-    {"b": "biologi", "f": 1, "c": "005.1.01", "n": "Ruang Administrasi Jurusan"},
+
+    // --- BIOLOGI ---
+    {"b": "biologi", "f": 1, "c": "005.1.01", "n": "Ruang Administrasi Jurusan", "image": "assets/foto/biologi-admin.jpg"},
     {"b": "biologi", "f": 1, "c": "005.1.02", "n": "Ruang Tunggu"},
     {"b": "biologi", "f": 1, "c": "005.1.02.1", "n": "Ruang Sekretaris Jurusan"},
     {"b": "biologi", "f": 1, "c": "005.1.02.2", "n": "Ruang Ketua Jurusan"},
@@ -574,6 +594,8 @@ const rooms = [
     {"b": "biologi", "f": 10, "c": "005.10.04", "n": "Tangga"},
     {"b": "biologi", "f": 10, "c": "005.10.05", "n": "Lift Mahasiswa"},
     {"b": "biologi", "f": 10, "c": "005.10.06", "n": "Lift Dosen"},
+
+    // --- BILINGUAL ---
     {"b": "bilingual", "f": 1, "c": "06", "n": "Gudang"},
     {"b": "bilingual", "f": 1, "c": "06.1.01 A", "n": ""},
     {"b": "bilingual", "f": 1, "c": "06.1.02", "n": ""},
@@ -598,10 +620,9 @@ const rooms = [
 ];
 
 // ---------- Perkiraan jarak DI DALAM gedung (meter) ----------
-// Asumsi: pintu masuk ada di lantai 1. Silakan sesuaikan angkanya.
 const JARAK_DALAM = {
-    dasar: 20,        // jalan dari pintu masuk ke tangga/koridor sampai ke ruangan
-    perLantai: 12     // tambahan tiap naik/turun satu lantai (tangga)
+    dasar: 20,        
+    perLantai: 12     
 };
 
 // Kelompokkan ruangan per gedung
